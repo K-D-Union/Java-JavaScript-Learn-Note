@@ -70,6 +70,38 @@ public class SonObject implements SuperObject{
 }
 ```
 
+::: tip 方式二：
+通过@Configuration、@Bean注解来实现
+:::
+
+```java
+@Configuration
+public class ObjectConfig {
+  @Bean
+  public void method(){
+    //Business
+  }
+}
+```
+
+::: tip 方式三：
+通过xml进行实现，首先创建一个<beans></beans>在beans中创建一个bean的子标签，bean标签中有两个属性id和class，id声明bean的名称，class属性则是用来指定要创建的类（包含包名）。
+:::
+
+```java
+@Configuration
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="method" class="com.java.config"/>
+</beans>
+}
+```
+
 ### Bena 作用域
 |类别	    |说明|
 | -------------|:-------------:|
@@ -131,6 +163,8 @@ public class ServiceImpl{
 ### AOP原理
 <p>&nbsp;&nbsp;&nbsp;&nbsp;AOP采用是JVM中的动态代理机制，动态代理分为CGLib、JDK，什么是动态代理？简单理解一下，程序运行时由Java反射机制动态生成动态代理，不需要手动编写它的源代码，可以简化编程工作。采用了Java中最常见的设计模式代理模式。什么是代理模式呢？用一个经典的案例来解说一下：假如有一辆正在行驶的汽车，有一天司机突然想记录一下今天行驶的时间这个时候就用到了代理模式，首先把正在行驶的汽车作为目标方法，代理目标方法在开始行驶时记录一个当前时间，在结束行驶时记录一个结束时间，最后用结束时间减去开始时间；这个过程称为代理模式。
 </p>
+
+## Spring常用注解
 
 ## 总结
 <p>

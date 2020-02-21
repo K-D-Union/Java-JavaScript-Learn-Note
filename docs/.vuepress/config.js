@@ -13,6 +13,8 @@ module.exports = {
         search: true,
         searchMaxSuggestions: 10,
         sidebar: 'auto',
+        repo: 'https://github.com/superman-yuan/JavaDocument.git',
+        repoLabel: 'Github',
         nav: [{
                 text: '首页',
                 link: '/'
