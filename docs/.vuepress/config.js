@@ -1,5 +1,5 @@
 module.exports = {
-    title: 'Sperman-Yuan',
+    title: 'K-D-Union',
     description: 'Welcome to the world of Java',
     cache: false,
     head: [
@@ -13,7 +13,7 @@ module.exports = {
         search: true,
         searchMaxSuggestions: 10,
         sidebar: 'auto',
-        repo: 'https://github.com/superman-yuan/JavaDocument.git',
+        repo: 'https://github.com/K-D-Union/Java-JavaScript-Learn-Note.git',
         repoLabel: 'Github',
         nav: [{
                 text: '首页',

@@ -1,7 +1,7 @@
 ---
 home: true
 lang: zh-CN
-heroText: Superman-Yuan
+heroText: K-D-Union
 heroImage: /logo.jpg
 actionText: 开始 →
 actionLink: /JavaIndex/
