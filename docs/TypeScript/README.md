@@ -4,11 +4,14 @@ title: TypeScript
 ---
 # TypeScript
 
+<<<<<<< HEAD
 ## 参考说明
 ::: tip 说明
 本篇博客由慕课网视频[TypeScript －系统入门到项目实战](https://coding.imooc.com/class/412.html)(Dell-Lee)阅读整理而来，观看视频请支持正版。
 :::
 
+=======
+>>>>>>> 更新TypeScript栏
 ## 介绍
 
 `TypeScript`是`JavaScript`的超集，拥有静态代码类型。`TypeScript`可以编译成普通`JavaScript`代码然后再去运行。
