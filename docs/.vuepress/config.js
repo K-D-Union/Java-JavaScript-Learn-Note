@@ -43,6 +43,19 @@ module.exports = {
                 text: 'Java源码',
                 link: '/JavaSoundCode/'
             },
+            {
+                text: '前端框架',
+                items: [{
+                    text: 'Vue',
+                    link: '/Vue/'
+                }, {
+                    text: 'TypeScript',
+                    link: '/TypeScript/'
+                }, {
+                    text: 'React',
+                    link: '/React/'
+                }]
+            },
         ],
     }
 }
