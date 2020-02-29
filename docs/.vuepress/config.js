@@ -1,6 +1,6 @@
 module.exports = {
     title: 'K-D-Union',
-    description: 'Welcome to the world of Java',
+    description: 'Welcome to K-D-Union\'\s World',
     cache: false,
     head: [
         ['link', {
