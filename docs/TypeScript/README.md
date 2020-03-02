@@ -184,3 +184,81 @@ function add ({ first, second }): { first: number, second: number } {
 }
 const total = add(1, 2)
 ```
+## 数组和元组
+在`TS`中数组是和`JS`中是一样的，比如我们声明一个数组：
+``` ts
+const numberArr = [1, 2, 3]
+```
+在`TS`中我们同样可以声明数组每一项类型（基础类型和对象类型），首先我们来看基础类型：
+### 基础类型
+TS中我们可以使用任意基础类型来约束数组内容，见如下代码：
+``` ts
+const numberArr: number[] = [1, 2, 3] // 同样这种情况不定义数组类型也是可以的，TS会自动帮助我们推断出数组类型为number
+const stringArr: string[] = ['1', '2', '3']
+```
+当我们数组中的内容多一项少一项或者某一项的内容类型不是我们约束的类型的话，都会飘红。
+但是在很多应用场景中数组内不仅有`number`类型还会有其他类型的值，比如说：`string`，那我们应该如何来约定数组类型呢：
+``` ts
+const arr: (string ｜ number) = [1, '2', 3]
+```
+### 对象类型
+同样我们也可以使用对象类型来约束数组内容，比如：
+``` ts
+const objectArr: { name: string, age: number }[] = [
+   {
+      name: 'haochyk',
+      age: 18,
+   },
+]
+```
+如果我们的对象内容非常多的话，这样写代码就显的非常不美观了，我们可以使用类型别名(`type alias`)来解决这个问题：
+``` ts
+type User = {
+   name: string,
+   age: number,
+}
+const objectArr: User[] = [
+   {
+      name: 'haochyk',
+      age: 18,
+   },
+]
+```
+值得我们注意的是`class`类，`TS`不会强制要求必须返回实例对象，所以只要数据内容格式一致都是被允许的，比如以下这种写法：
+``` ts
+class User = {
+   name: string,
+   age: number,
+}
+const objectArr: User[] = [
+   new User(),
+   {
+      name: 'haochyk',
+      age: 18,
+   },
+]
+```
+### 元组
+我们首先说下什么是元组，元组（`tuple`）可以看作是数组的拓展，它表示已知元素数量和类型的数组。我们通过一个实例来了解下到底什么是元组，以及元组的应用场景是什么：
+首先我们来看如何声明一个元组：
+``` ts
+const userInfo: [string, string, number] = ['haochy', 'male', 18]
+```
+数组也可以满足这种情况我们为什么要使用元组呢，比如以下这种情况:
+数组中的长度是固定的，也就是我们是知道数组具体有几项内容，也知道数组每一项的类型，比如说数组的第一项是名称，第二项是性别，第三项是年龄，当然前两项肯定是`string`类型，最后一项为`number`，用数组可以这样声明：
+``` ts
+const userInfo: ( string | number )[] = ['haochy', 'male', 18]
+```
+但是这样声明我们就控制不了数组内具体每一项的类型了，第一项我们可以修改成`number`类型，它不会报错，这样其实是不符合我们的预期的，所以元组就来了，它可以帮助我们做到这一点，来约束住数组的每一项：
+接下来我们来看下元组的应用场景，大致有：读取`excel`导出的文件、`csv`文件再转换为`js`的时候，使用元组比较好管理，像读取`csv`文件转为`js`的数据结构为这种类型：
+``` js
+[
+   ['haochyk', 'male', 18],
+]
+```
+这个时候我们怎么来定义它的类型呢，可以这样来定义：
+``` ts
+const userInfoList: [string, string, number][] = [
+   ['haochyk', 'male', 18],
+]
+```
