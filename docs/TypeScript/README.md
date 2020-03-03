@@ -103,7 +103,7 @@ const newData = JSON.parse(rowData)
 但是这种情况我们使用编辑器将鼠标放置在`newData`上我们会发现`ts`无法推断出`newData`的类型，结果为`any`，像这种使用内置函数方法的情况，我们可以这样处理：
 ```ts
 interface Person = {
-   name: 'string',
+   name: 'string';
 }
 const rowData = '{"name": "haochyk"}'
 const newData: Person = JSON.parse(rowData)
@@ -214,8 +214,8 @@ const objectArr: { name: string, age: number }[] = [
 如果我们的对象内容非常多的话，这样写代码就显的非常不美观了，我们可以使用类型别名(`type alias`)来解决这个问题：
 ``` ts
 type User = {
-   name: string,
-   age: number,
+   name: string;
+   age: number;
 }
 const objectArr: User[] = [
    {
@@ -227,8 +227,8 @@ const objectArr: User[] = [
 值得我们注意的是`class`类，`TS`不会强制要求必须返回实例对象，所以只要数据内容格式一致都是被允许的，比如以下这种写法：
 ``` ts
 class User = {
-   name: string,
-   age: number,
+   name: string;
+   age: number;
 }
 const objectArr: User[] = [
    new User(),
@@ -261,4 +261,272 @@ const userInfo: ( string | number )[] = ['haochy', 'male', 18]
 const userInfoList: [string, string, number][] = [
    ['haochyk', 'male', 18],
 ]
+```
+## Interface接口
+首先我看来看一段代码，我们通过代码来讲解interface的具体知识点。
+``` ts
+function getPersonName (person: { name: string }) {
+   console.log(person.name)
+}
+function setPersonName (person: { name: string }, name: string) {
+   person.name = name
+}
+```
+上面两个简单的方法我们可以看出person参数后的类型定义我们需要重复的写两边，这个时候我们将重复的类型定义用interface接口的形式抽离出来：
+``` ts
+interface Person {
+   name: string;
+   age: number;
+}
+function getPersonName (person: Person): void {
+   console.log(person.name)
+}
+function setPersonName (person: Person, name: string): void {
+   person.name = name
+}
+```
+当然还有另外一种方法可以实现相通的效果就是使用类型定义：`type alias`:
+``` ts
+type Person = {
+   name: string;
+   age: number;
+}
+function getPersonName (person: Person): void {
+   console.log(person.name)
+}
+function setPersonName (person: Person, name: string): void {
+   person.name = name
+}
+```
+`interface`和`type`类似但又不完全相同，不同点就是interface只能代表一个函数或者一个对象，它不能代表一个基础类型：
+``` ts
+type Person = string
+interface Person {
+   name: string;
+   age: number;
+}
+```
+::: tip 提示
+在`TypeScript`里面一个通用型的规范就是：如果能用接口来表述一个别名的话我们就用接口的方式，实在不行我们才用类型别名
+:::
+在有些情况下我们不需要传递`age`属性该怎么办，我们不传递`age`参数`ts`又会报错，我们可以这样来写：
+``` ts
+interface Person {
+   readyonly name: string;
+   age?: number;
+}
+```
+这样的意思就是`age`属性可有可无，还有一个修饰符：`readonly`意思为属性只读。
+这里值得我们注意的一点就是，如果我们传递参数的时候，多传递了一个`sex`属性：
+``` ts
+interface Person {
+   name: string;
+   age: number;
+}
+function getPersonName (person: Person): void {
+   console.log(person.name)
+}
+function setPersonName (person: Person, name: string): void {
+   person.name = name
+}
+const person = {
+   name: 'haochyk',
+   sex: 'male',
+}
+// 不会报错
+getPersonName(person)
+// 报错
+getPersonName({
+   name: 'haochyk',
+   sex: 'male',
+})
+```
+这是因为，我们如果直接使用字面量的形式传参的话，`ts`会进行强校验，必须严格符合参数的类型定义，而如果我们使用缓存的形式，则不会，只要有类型定义该有的东西即可，多出一点东西也是可以的。
+如果我们只是确定参数对象有`name`属性，我们不确定有其他属性的时候我们可以这样来写：
+``` ts
+interface Person {
+   readyonly name: string;
+   age?: number;
+   [propName: string]: any;
+}
+```
+接口里不仅可以存这样的属性和它的类型还可以存方法，比如我们定义`say`方法返回值的类型为`string`：
+``` ts
+interface Person {
+   readyonly name: string;
+   age?: number;
+   [propName: string]: any;
+   say(): string;
+}
+```
+`Class`类是可以应用接口的，当一个类去应用接口时必须拥有接口里的属性，举个例子：
+``` ts
+class user implements Person {
+   name = 'haochy';
+   say () {
+      return 'hello'
+   }
+}
+```
+接口之间还可以互相继承，如下面这个例子：
+``` ts
+interface Teacher extends Person {
+   teach(): string
+}
+const teacher = {
+   name: 'haochyk',
+   age: 18,
+   say () {
+      return 'hello'
+   },
+   teach () {
+      return 'TypeScript'
+   }s
+}
+setPersonName(teacher, 'haochyk')
+```
+接口继承它会拥有`Person`接口下所有的属性和方法，同时还必须得有自己的属性或方法。
+接口自身除了可以定义属性、方法之外，其实它自身还可以定义函数：
+``` ts
+interface SayHi {
+   (word: string): string
+}
+const say: SayHi = (word) => {
+   return word
+}
+```
+同样`interface`还可以定义数组这样的索引类型，当我们去写这种接口的时候，`ts`最终会把把文件编译成js，但是最终编译后的`js`内并没有`interface`。
+::: danger 注意
+其实，`interface`就是在我们开发过程中`TypeScript`帮助我们做语法提示的一个工具。真正编译的时候会将这部分内容剔除掉。
+:::
+## 类的定义与继承
+`TypeScript`中的类其实和`JavaScript`、`ES6`中的类很类似，不过在它的基础上`TypeScript`提供了更多的特性.
+我们先看一个最基础的类：
+``` ts
+class Person {
+   name = 'haochyk';
+   getName () {
+      console.log(this.name)
+   }
+}
+```
+有了类之后我们可以通过类来创建一个实例，比如说：
+``` ts
+class Person {
+   name = 'haochyk';
+   getName () {
+      return this.name
+   }
+}
+const person = new Person()
+```
+到这里我们就说了如何去定义一个类，以及如何在类里去定义方法。
+接着我们来说下类的继承：(在`ES6`里写类的继承其实是和`TypeScript`里是一样的)
+``` ts
+class Person {
+   name = 'haochyk';
+   getName () {
+      return this.name
+   }
+}
+class Teacher extends Person {
+   getTeacherName () {
+      return 'hao'
+   }
+}
+const teacher = new Teacher()
+console.log(teacher.getName()) // haochyk
+console.log(teacher.getTeacherName()) // hao
+```
+继承的意思就是，子类不仅可以使用父类的方法还可以使用自己的方法。
+类还有一个概念叫做重写，即在子类和父类中的同名方法，子类中的方法会覆盖掉父类中的方法，如果想要调用父类中的方法，我们可以使用`super`，例如：
+``` ts
+class Teacher extends Person {
+   getName () {
+      return super.getName() + '1'
+   }
+}
+console.log(teacher.getName()) // haochyk1
+```
+这同样也是`super`在开发中常用的应用场景：子类重写父类方法，如果需要调用父类方法可以使用`super`
+## 类中的访问类型和构造器
+### 访问类型
+什么是访问类型？我们在`ts`中定义一个类，我们实例化这个类，访问以及修改这个实例中的属性都是可以的，因为`ts`中类的属性默认是`public`访问类型。
+访问类型分为三种：`private`、`protected`、`public`。<br />
+* `private`： 仅在类内允许被调用
+* `protected`：类内或者继承的子类中允许被调用
+* `public`：类内外都可以允许被调用
+我们通过代码来看下这三个的区别：<br />
+首先`private`：
+``` ts
+class Person {
+   private name = 'haochyk'
+   say () {
+      return this.name // 允许访问
+   }
+}
+const person = new Person()
+console.log(person.name) // ts报错
+```
+`public`：
+``` ts
+class Person {
+   public name = 'haochyk'
+   say () {
+      return this.name // 允许访问
+   }
+}
+const person = new Person()
+console.log(person.name) // 允许访问
+```
+`protected`：
+``` ts
+class Person {
+   protected name = 'haochyk'
+   say () {
+      return this.name // 允许访问
+   }
+}
+class Teacher {
+   teacherSay () {
+      return this.name // 允许访问
+   }
+}
+const person = new Person()
+console.log(person.name) // ts报错
+```
+### 构造器 (constructor)
+老样子，我们先来定义一个类：
+``` ts
+class Person {
+   public name: string
+   constructor (name: string) {
+      this.name = name
+   }
+}
+const person = new Person('haochyk')
+console.log(person.name) // haochyk
+```
+`constructor`这个方法会在类被实例化的时候自动执行，并且将实例化的参数传递给`constructor`这个方法。
+以上例子是比较传统的写法，我们先定义一个属性，然后在构造器中给属性赋值，`ts`提供了一个更简单的方法，这两种写法是等价的：
+``` ts
+class Person {
+   constructor (public name: string) {}
+}
+const person = new Person('haochyk')
+console.log(person.name) // haochyk
+```
+如果继承中，子类要使用构造器，需要使用`super`，这时`super`是一个方法，它代表父类的构造函数，同时需要将父类构造函数需要的参数传递给`super`方法，即便父类没有构造器，子类也需要调用一个参数为空的`super()`，代码如下：
+``` ts
+class Person {
+   constructor (public name: string) {}
+}
+class Teacher {
+   constructor (public age: number) {
+      super('haochyk')
+   }
+}
+const teacher = new Teacher(18)
+console.log(teacher.name) // haochyk
+console.log(teacher.age) // 18
 ```
