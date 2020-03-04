@@ -67,7 +67,7 @@ npm install -g ts-node
 ts-node xx.ts
 ```
 ## 静态类型的深度理解
-&emsp;静态类型的变量不仅类型不能修改，而且意味着这个变量的属性和方法基本已经确定了。正是因为这样，我们在编辑器使用静态类型的时候会给我们很好的语法提示。
+&emsp;&emsp;静态类型的变量不仅类型不能修改，而且意味着这个变量的属性和方法基本已经确定了。正是因为这样，我们在编辑器使用静态类型的时候会给我们很好的语法提示。
 ## 基础类型和对象类型
 ### 基础类型
 基础类型：`number`、`string`、`bollean`、`null`、`undefined`、`symbol`、`void`
@@ -127,7 +127,7 @@ let count = 123
 ```
 如果 `TS` 能够自动分析变量类型，我们就什么都不需要做了。反之，我们就需要使用类型注解。
 ## 函数相关类型
-&emsp;首先我们收一下TS的几种定义函数的方式和JS是一样的
+&emsp;&emsp;首先我们收一下TS的几种定义函数的方式和JS是一样的
 ```js
 function hello () {}
 const hello = function () {}
@@ -530,3 +530,34 @@ const teacher = new Teacher(18)
 console.log(teacher.name) // haochyk
 console.log(teacher.age) // 18
 ```
+## Setter和Getter
+我们首先来说下`getter`和`setter`的作用是：其实是为了保护类的私有属性，对私有属性的一个加密，我们通过代码来看下：
+``` ts
+class Demo {
+   constructor (private _name: string) {}
+   get name () {
+      return this._name + 'a48dsi39xls2'
+   }
+   set setName (name: string) {
+      this._name = name
+   }
+}
+const demo = new Demo('haocyk')
+console.log(demo.name) // 'haocyka48dsi39xls2'
+demo.setName('haochyk')
+```
+然后我们再来说一下如何使用`TypeScript`来实现一个单例模式（一个类只能被实例化一次）：
+``` ts
+class Demo {
+   private static instance: Demo;
+   private constructor () {}
+   static getInstance () {
+      if (!this.instance) {
+         this.instance = new Demo()
+      }
+      return this.instance
+   }
+}
+const demo = Demo.getInstance()
+```
+&emsp;&emsp;首先我们要做的第一件事情就是控制住类的构造函数不能在外部调用，所以我们把类的构造函数设置成私有属性，这个时候该如何实例化一个类呢:monocle:，我们在类中定义一个方法提供给外部使用，由于我们没办法实例化类该怎么调用实例化类上的方法，所以我们要用`static`，直接将方法挂载到类上而不是挂载到实例化对象上，这样我们就可以通过`demo.getInstance()`来实例化`demo`这个类了，但是换句话说了，这样还不是照样可以无限实例化类嘛，实例化出来的对象指针还都不是一样的，我们接着往下看，我们在类上在通过`static`的方式挂载一个属性，将它设置为私有属性，在g`etInstance`方法中判断，如果是初始化第一次实例化这个类，我们就讲实例化对象绑定在这个`instance`属性上，最后返回出去，如果有的话，我们直接将`instance`返回出去，这样我们就实现了一个最简单的单例模式。
