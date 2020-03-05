@@ -15,6 +15,7 @@ module.exports = {
         sidebar: 'auto',
         repo: 'https://github.com/K-D-Union/Java-JavaScript-Learn-Note.git',
         repoLabel: 'Github',
+        lastUpdated: '最近更新时间',
         nav: [{
                 text: '首页',
                 link: '/'
@@ -57,5 +58,6 @@ module.exports = {
                 }]
             },
         ],
-    }
+    },
+    plugins: ['@vuepress/active-header-links', '@vuepress/back-to-top']
 }
