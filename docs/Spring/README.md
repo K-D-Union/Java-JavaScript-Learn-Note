@@ -152,10 +152,6 @@ public class ServiceImpl{
 
 ```
 
-
-### IocDemo下载地址
-<a href="https://github.com/superman-yuan/demo.git">https://github.com/superman-yuan/demo.git</a>
-
 ## AOP
 <p>&nbsp;&nbsp;&nbsp;&nbsp;AOP是Spring框架面向切面的编程思想，AOP采用一种称为"横切"的技术，将涉及多业务流程的通用功能抽取并单独封装形成独立切面，在合适的时机将这些切面横向切入到业务流程指定的位置中。
 </p>
@@ -165,7 +161,50 @@ public class ServiceImpl{
 </p>
 
 ## Spring常用注解
+### 组件注解
 
+<p>&nbsp;&nbsp;&nbsp;&nbsp;在SpringIOC运行容器中，是通过core建立维护各个Bean之间的关系，也是我们说的，组件注册
+</p>
+
+|注解名称	    |说明|
+| -------------|:-------------:|
+|@Component|用于标注一个普通的bean，指定某个类是容器的bean。|
+|@Controller|用于标注一个控制器类（控制层 controller）。|
+|@Service|用于标注业务逻辑类（业务逻辑层 service）。|
+|@Repository|用于标注DAO数据访问类 （数据访问层 dao）。|
+|@Scope|注解和@Component类注解联合使用，用于标记该类的作用域，默认singleton。|
+|@Lazy（true）|指定初始化顺序，是否延迟。|
+|@DepondsOn|强制初始化。（使用@DepondsOn("xxx")会先初始化双引号中的bean。|
+|@Resource|用来装配bean，和@Autowired的功能一样，不同的是@Resource是通过byName获取的Bean。|
+|@Autowired|同@Resource功能一样，用来装配bean,不同的是@Autowired是通过byType|
+
+### 配置相关注解
+|注解名称	    |说明|
+| -------------|:-------------:|
+|@Bean|注入一个bean，通常和Configuration一起使用，将方法注入到容器中。|
+|@ConfigurationProperties|用于读取配置文件，可以获取到配置文件中的属性值。|
+|@Configuration|用于修饰一个类，代表该类数据配置类，相等于Bean的xml文件。|
+|@Import|该注解用于一般不在扫描包下的配置类，进行引入配置类时使用。|
+|@ImportResource|修饰Java类，用于向类引入xml配置文件。|
+|@Value|可以读取配置文件，用于注入对象属性，或常量时使用。（注：在static修饰词上使用无效。）|
+|@PropertySource|一般用于加载属性文件，可以使用Value来加载文件路径。|
+
+### 切面相关注解(AOP相关注解)
+|注解名称	    |说明|
+| -------------|:-------------:|
+|@Aspect|用来定义切入点，修改Java类，用@Aspect修饰过的类，容器不会对该类进行增强。|
+|@Before|用Before修改过的方法可以对目标方法进行前置增强。|
+|@AfterReturning|后置增强，用AfterReturning修饰过的方法，会等目标方法正常返回后进行后置增强。用来修饰方法用。|
+|@AfterThrowing|异常增强，当目标方法抛出异常之后无法捕获的时候进行对目标方法增强。（修饰方法。)|
+|@After|同AfterReturning相同，做后置增强，不同的是After不管目标方法有没有正常返回都会对目标方法进行后置增强。|
+|@Around|用来修饰方法，可以对目标方法进行前置、后置增强，决定目标方法什么时候执行。（一般在线程安全情况下使用）|
+|@Pointcut|定义一个切入点表达式用于被其他增强调用。使用该方式定义切入点方便管理，易复用。|
+
+
+### 本文Demo下载地址
+<a href="https://github.com/superman-yuan/SpringDemo.git">https://github.com/superman-yuan/SpringDemo.git</a>
+
+ 
 ## 总结
 <p>
 &nbsp;&nbsp;&nbsp;&nbsp;Spring给复杂的J2EE开发带来了春天。它的核心是轻量级的IoC容器，它的目标是为J2EE应用提供了全方位的整合框架，在Spring框架下实现多个子框架的组合，这些子框架之间可以彼此独立，也可以使用其它的框架方案加以代替，Spring希望为企业应用提供一站式（one-stopshop）的解决方案。
