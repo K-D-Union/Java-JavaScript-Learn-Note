@@ -1,4 +1,5 @@
 module.exports = {
+    base: '/Java-JavaScript-Learn-Note/',
     title: 'K-D-Union',
     description: 'Welcome to K-D-Union\'\s World',
     cache: false,
