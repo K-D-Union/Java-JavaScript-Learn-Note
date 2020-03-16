@@ -584,3 +584,205 @@ class Triangle extends Gemo {
 }
 const demo = Demo.getInstance()
 ```
+## TypeScript中的配置文件
+&emsp;首先我们都知道在初始化`TypeScript`项目的时候我们需要使用命令：
+```sh
+ts --init
+```
+&emsp;使用命令初始化项目后，我们的文件夹中会多出一个`tsconfig.json`文件，这个就是`TypeScript`项目的配置文件。我们知道给他人提供代码的时候需要我们将`ts`文件转成`js`文件，这个编译过程需要使用命令：
+```sh
+tsc demo.ts
+```
+如果我们`tsc`后面指定了具体文件其实是不会走我们项目中的`tsconfig.json`文件的，反之，直接使用`tsc`，后面不跟任何内容是会走配置文件的，它会默认将根目录下的所有内容进行编译生成对应的`js`文件。那，如果我们想指定编译文件，而不想全部编译，我们可以在`tsconfig.json`文件内做一些修改：
+```json
+{
+   "file": ["demo.ts"]
+}
+```
+或者你也可以使用`exclude`和`include`来实现同样的功能：
+```json
+{
+   "include": [
+      "./demo.ts"
+   ],
+   "exclude": [
+      "./demo1.ts",
+   ]
+}
+```
+当然也可以接收正则表达式来匹配文件，接着我们来看下配置文件中的`compilerOptions`配置项，我们列举几个常用的配置项来讲解：
+::: warning 注意
+`ts-node`底层其实会走配置文件的。
+:::
+```json
+/* 编译配置项 */
+"compilerOptions": {
+   "allowJs": true,                       /* 是否编译js文件 */
+   "checkJs": true,                       /* 是否检测js语法问题 */
+   "sourceMap": true,                     /* 是否生成sourceMap文件 */
+   "outDir": "./build",                        /* 编译后文件的存放位置 */
+   "rootDir": "./",                       /* 需要编译的文件目录 */
+   "removeComments": true,                /* 编译后去除注释 */
+   "strict": true,                           /* 启用所有严格类型检查选项 */
+   "noImplicitAny": true,                 /* 不能隐式定义any，必须显式得定义 */
+   "strictNullChecks": true,              /* 对null值的严格检验 */
+   "strictFunctionTypes": true,           /* 方法参数必须定义类型 */
+   /* Additional Checks */
+   "noUnusedLocals": true,                /* 对多余代码的一个检测，比如生命了一个变量没有地方使用 */
+   "noUnusedParameters": true,            /* 与上雷同，此配置针对方法的参数 */
+}
+```
+## 联合类型和类型保护
+首先我们来说下什么是联合类型，我们声明两个接口：
+```ts
+interface Bird {
+   fly: boolean;
+   sing: () => {};
+}
+interface Dog {
+   fly: boolean;
+   bark: () => {};
+}
+function trainAnimal (animal: Bird | Dog) {
+   animal.sing()
+}
+```
+这个时候我们在调用`animal`参数时，`ts`只会给我们提示`fly`属性，而不会提示其他的方法，这就是联合类型，只会提示共有的属性和方法，当我们调用`animal`参数的`sing`方法的时候，`ts`会发出警告，因为如果我们`Dog`类型的话其实是没有`sing`方法的，我们如何来规避这种警告呢，我们需要使用类型保护，类型保护的方式有很多种，我们来简单介绍几个：
+### 断言
+```ts
+interface Bird {
+   fly: boolean;
+   sing: () => {};
+}
+interface Dog {
+   fly: boolean;
+   bark: () => {};
+}
+function trainAnimal (animal: Bird | Dog) {
+   if (animal.fly) {
+      (animal as Bird).sing()
+   } else {
+      (animal as Dog).bark()
+   }
+}
+```
+### in
+```ts
+function trainAnimal (animal: Bird | Dog) {
+   if ('sing' in animal) {
+      animal.sing()
+   } else {
+      animal.bark()
+   }
+}
+```
+### typeof
+```ts
+function add (first: string | Number, second: string | Number) {
+   if (typeof first === 'string' || typeof second === 'string') {
+      return `${first}${second}`
+   }
+   return first + second
+}
+```
+### instanceof
+```ts
+class Number {
+   count: number;
+}
+function add (first: object | Number, second: object | Number) {
+   if (first instanceof Number && second instanceof Number) {
+      return first.count + second.count
+   }
+   return 0
+}
+```
+::: warning 注意
+此处要使用`class`类的形式，因为`interface`不具备`instanceof`方法
+:::
+## Enum 枚举类型
+我们在开发实际过程当中都会有这种情况：
+```js
+const Status = {
+   OFFLINE: 0,
+   ONLINE: 1,
+   DELETED: 2,
+}
+function getResult (status) {
+   if (status === Status.OFFLINE) {
+      return 'offline'
+   } else if (status === Status.ONLINE) {
+      return 'online'
+   } else if (status === Status.DELETED) {
+      return 'deleted'
+   }
+   return 'error'
+}
+const result = getResult(Status.OFFLINE)
+```
+我们可以使用`ts`来更优雅的实现：
+```ts
+enum Status {
+   OFFLINE,
+   ONLINE,
+   DELETED,
+}
+function getResult (status) {
+   if (status === Status.OFFLINE) {
+      return 'offline'
+   } else if (status === Status.ONLINE) {
+      return 'online'
+   } else if (status === Status.DELETED) {
+      return 'deleted'
+   }
+   return 'error'
+}
+const result = getResult(Status.OFFLINE)
+```
+这样也可以实现上面用`js`实现的效果，这是因为，`ts`中的`enum`枚举类型，默认会给第一项定义为`0`，依次递增，如果我们想更改默认值，我们可以这样来修改：
+```ts
+enum Status {
+   OFFLINE = 1,
+   ONLINE,
+   DELETED,
+}
+```
+这样的话，分别代表的就是`1`、`2`、`3`，如果我们将`ONLINE`的值修改为`4`，那么`DELETED`的值将为`5`。我们不仅可以正向查询还可以反向查询：
+```ts
+Status.OFFLINE === Status[0]
+```
+## 函数泛型
+&emsp;泛型，泛指的类型（`generic`），泛型的使用场景：我们不确定方法定义的时候参数的类型，当我们使用函数的时候我们才能确定函数的类型，这个时候我们可以在函数参数中使用泛型，我们在函数当中使用泛型的时候，需要在函数名的后面使用尖括号的形式定义下泛型，通常我们使用`T`也就是`type`的缩写，不仅可以定义一个泛型还可以定义多个泛型，使用逗号隔开即可，我们先来看一个在函数中使用泛型的一个例子：
+```ts
+function join<T, P> (first: T, second: P) {
+   return `${first}${second}`
+}
+const result = join<string, string> (1, '1')
+```
+泛型不仅可以在函数的参数中使用，还可以作为函数的返回结果使用：
+```ts
+function join<T, P> (first: T, second: P): T {}
+```
+数组中使用泛型，以下两种情况是等价的：
+```ts
+function join<T> (first: T[]) {
+   return first
+}
+// or
+function join<T> (first: Arrary<T>) {
+   return first
+}
+const result = join<string> (['123'])
+```
+::: warning 注意
+如果在调用函数的时候没有写前面的具体类型，它也不会报错，这是因为`ts`底层会做类型推断
+:::
+## 类中的泛型
+## 泛型类型
+
+
+
+
+
+
+
