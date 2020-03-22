@@ -272,7 +272,7 @@ function setPersonName (person: { name: string }, name: string) {
    person.name = name
 }
 ```
-上面两个简单的方法我们可以看出person参数后的类型定义我们需要重复的写两边，这个时候我们将重复的类型定义用interface接口的形式抽离出来：
+上面两个简单的方法我们可以看出person参数后的类型定义我们需要重复的写两遍，这个时候我们将重复的类型定义用interface接口的形式抽离出来：
 ``` ts
 interface Person {
    name: string;
@@ -321,7 +321,7 @@ interface Person {
 ``` ts
 interface Person {
    name: string;
-   age: number;
+   age?: number;
 }
 function getPersonName (person: Person): void {
    console.log(person.name)
@@ -381,7 +381,7 @@ const teacher = {
    },
    teach () {
       return 'TypeScript'
-   }s
+   }
 }
 setPersonName(teacher, 'haochyk')
 ```
@@ -562,10 +562,10 @@ const demo = Demo.getInstance()
 ```
 &emsp;&emsp;首先我们要做的第一件事情就是控制住类的构造函数不能在外部调用，所以我们把类的构造函数设置成私有属性，这个时候该如何实例化一个类呢:thinking:，我们在类中定义一个方法提供给外部使用，由于我们没办法实例化类该怎么调用实例化类上的方法，所以我们要用`static`，直接将方法挂载到类上而不是挂载到实例化对象上，这样我们就可以通过`demo.getInstance()`来实例化`demo`这个类了，但是换句话说了，这样还不是照样可以无限实例化类嘛:cold_sweat:，实例化出来的对象指针还都不是一样的，我们接着往下看，我们在类上在通过`static`的方式挂载一个属性，将它设置为私有属性，在`getInstance`方法中判断，如果是初始化第一次实例化这个类，我们就讲实例化对象绑定在这个`instance`属性上，最后返回出去，如果有的话，我们直接将`instance`返回出去，这样我们就实现了一个最简单的单例模式:100:。
 ## 抽象类
-&emsp;&emsp;抽象类的概念就是将类里面公用的东西提炼出来，在组成一个抽象类，抽象类里不仅可以有抽象方法还可以有具体的属性和方法，他与`interface`不同的是，`interface`是将接口中公用的东西提炼出来，而抽象类针对的是类，抽象类不能直接被实例化，但是他可以被继承，我们来看一个例子:chestnut:：
+&emsp;&emsp;抽象类的概念就是将类里面公用的东西提炼出来，再组成一个抽象类，抽象类里不仅可以有抽象方法还可以有具体的属性和方法，他与`interface`不同的是，`interface`是将接口中公用的东西提炼出来，而抽象类针对的是类，抽象类不能直接被实例化，但是他可以被继承，我们来看一个例子:chestnut:：
 ``` ts
 abstract class Gemo {
-   abstract getArea(): number //因为每个图形的具体实现面积的方法是不一样的，但是他们共同点是都应该有这个方法，所以我们把它修改为抽象方法，一旦你讲这个方法定义为抽象方法就以为你不能写方法的实现，你只能定义下这个方法
+   abstract getArea(): number //因为每个图形的具体实现面积的方法是不一样的，但是他们共同点是都应该有这个方法，所以我们把它修改为抽象方法，一旦你将这个方法定义为抽象方法就以为你不能写方法的实现，你只能定义下这个方法
 }
 class Circle extends Gemo {
    getArea () {
@@ -628,7 +628,7 @@ tsc demo.ts
    "strictNullChecks": true,              /* 对null值的严格检验 */
    "strictFunctionTypes": true,           /* 方法参数必须定义类型 */
    /* Additional Checks */
-   "noUnusedLocals": true,                /* 对多余代码的一个检测，比如生命了一个变量没有地方使用 */
+   "noUnusedLocals": true,                /* 对多余代码的一个检测，比如声明了一个变量没有地方使用 */
    "noUnusedParameters": true,            /* 与上雷同，此配置针对方法的参数 */
 }
 ```
@@ -752,7 +752,7 @@ enum Status {
 Status.OFFLINE === Status[0]
 ```
 ## 函数泛型
-&emsp;泛型，泛指的类型（`generic`），泛型的使用场景：我们不确定方法定义的时候参数的类型，当我们使用函数的时候我们才能确定函数的类型，这个时候我们可以在函数参数中使用泛型，我们在函数当中使用泛型的时候，需要在函数名的后面使用尖括号的形式定义下泛型，通常我们使用`T`也就是`type`的缩写，不仅可以定义一个泛型还可以定义多个泛型，使用逗号隔开即可，我们先来看一个在函数中使用泛型的一个例子：
+&emsp;泛型，泛指的类型（`generic`），泛型的使用场景：我们不确定方法定义的时候参数的类型，当我们使用函数的时候我们参数的类型，这个时候我们可以在函数参数中使用泛型，我们在函数当中使用泛型的时候，需要在函数名的后面使用尖括号的形式定义下泛型，通常我们使用`T`也就是`type`的缩写，不仅可以定义一个泛型还可以定义多个泛型，使用逗号隔开即可，我们先来看一个在函数中使用泛型的一个例子：
 ```ts
 function join<T, P> (first: T, second: P) {
    return `${first}${second}`
@@ -777,9 +777,130 @@ const result = join<string> (['123'])
 ::: warning 注意
 如果在调用函数的时候没有写前面的具体类型，它也不会报错，这是因为`ts`底层会做类型推断
 :::
-## 类中的泛型
-## 泛型类型
+## 类中的泛型以及泛型类型
+&emsp;&emsp;假设我们有一个类，类中接收一个`data`的数组作为参数，数组的每一项我们暂且定为`string`类型，我们这是可以写成`constructor (private data: string[]) {}`，那以后需求变更，数组内容不仅可以是`string`类型还可以是`number`类型，这时我们就需要修改为`constructor (private data: string[] | number[]) {}`，那以后我们可能支持更多类型的值，这时我们就需要写更长的联合类型，从而使我们的代码看起来非常的繁琐，为了解决这个问题我们可以使用类中的泛型，其实它不仅仅解决这种问题，在`TypeScript`中编写复杂代码很多时候我们需要使用泛型来解决灵活性上的问题。<br />
+&emsp;&emsp;接着我们来看下类中泛型的定义：
+```ts
+class DataManager<T> {
+   constructor (private data: T[]) {}
+   getName (index: number): T {
+      return this.data[index]
+   }
+}
+const data = new DataManager<string, number>(['1'])
+```
+&emsp;&emsp;类中定义泛型，需要在类名后加一对尖括号，内容为`T`，我们来解释下这段代码的意思：这个类中的构造函数接收一个`data`的参数，每一项内容我们定义为泛型`T`，接下来有一个`getName`的方法来获取指定数组中的每一项，参数`index`自然是一个`number`类型，返回结果我们暂时不确定，但是肯定是泛型`T`，所以我们就将`getName`的返回结果定义为`T`，这样就解决了我们上面复杂的联合类型的问题。<br />
+&emsp;&emsp;接下来我们再更改下需求，我现在想让`data`这个数组中的每一项都有一个`name`属性，那我们应该来怎么约束泛型呢，我们可以定义一个`interface`接口，接下来我们通过代码来实现下：
+```ts
+interface Item {
+   name: string;
+}
+class DataManager<T extends Item> {
+   constructor (private data: T[]) {}
+   getName (index: number): string {
+      return this.data[index].name
+   }
+}
+const data = new DataManager([{
+   name: 'haochyk',
+}])
+```
+&emsp;&emsp;同样我们可以借助`extends`让泛型在具体类型的对应上面来做一些约束，比如我只想让泛型类型为`number`或者`string`，我们可以使用`extends`这样来写：
+```ts
+class DataManager<T extends number | string> {
+   constructor (private data: T[]) {}
+   getName (index: number): string {
+      return this.data[index];
+   }
+}
+const data = new DataManager<string>(['1'])
+```
+&emsp;&emsp;泛型还可以作为`type`的声明，比如用泛型还可以声明些类型，那如何使用泛型作为一个具体的类型注解，看以下示例：
+```ts
+const hello = function <T>(param) => {
+   return param
+}
+const func: <T>(param: T) => T = hello
+```
+## 命名空间（nameSpace）
+&emsp;&emsp;`namespace`的一个好处就是给我们一个类似模块化开发的方式让我们能尽少得去声明全局变量，或者说把一组相关的内容封装到一起去对外提供统一的暴露接口：
+之前我们都是在`node`环境下运行代码，现在我们换成在浏览器下运行我们的代码，首先我们执行命令：`npm init -y`来初始化一个项目，接着我们再执行`tes -init`命令来初始化下`typescript`，现在我们再根目录下新建一个`src`目录，并新建一个叫做`page`的`js`文件，再在根目录下新建一个`index`的`html`文件，文件内容我们尽量从简，只是做一个简单的演示，接着我们来修改下`ts`的配置文件：将`rootDir`注释打开，内容修改为`./src`,并且将`outDir`注释也打开，内容修改为`./dist`，到这我们项目的基本框架就搭建起来了，然后我们在我们的`page.ts`文件中写一些东西，这里使用面向对象的写法来写：
+```ts
+class Header {
+   constructor () {
+      const eleE = document.createElement('div')
+      eleE.innerText = 'This is header'
+      document.body.appendChild(eleE)
+   }
+}
 
+class Content {
+   constructor () {
+      const eleE = document.createElement('div')
+      eleE.innerText = 'This is content'
+      document.body.appendChild(eleE)
+   }
+}
+
+class Footer {
+   constructor () {
+      const eleE = document.createElement('div')
+      eleE.innerText = 'This is footer'
+      document.body.appendChild(eleE)
+   }
+}
+
+class Page {
+   constructor () {
+      new Header()
+      new Content()
+      new Footer()
+   }
+}
+```
+之后我们再我们的`index.html`中引入`./dist/page.js`文件，并且实例化下`page`类，从新打包编译下，这时候我们打开i`ndex.html`页面就可以看到页面上已经有内容了，这里顺带提下，我们每次修改代码都需要重新执行`tsc`命令来打包编译`ts`文件，这里我们可以使用命令`tsc -w`来进行一个监听。回到浏览器的页面上的控制台我们来看，这个时候你会发现`Header`、`Content`、`Footer`、`Page`这些都是全局体变量，其实我们再项目开发的时候要尽量的去避免声明全局变量，这个时候我们可以使用`namespcae`来解决这个问题，回到我们的`page.ts`文件中我们来做下修改：
+```ts
+namespace Home {
+   class Header {
+      constructor () {
+         const eleE = document.createElement('div')
+         eleE.innerText = 'This is header'
+         document.body.appendChild(eleE)
+      }
+   }
+
+   class Content {
+      constructor () {
+         const eleE = document.createElement('div')
+         eleE.innerText = 'This is content'
+         document.body.appendChild(eleE)
+      }
+   }
+
+   class Footer {
+      constructor () {
+         const eleE = document.createElement('div')
+         eleE.innerText = 'This is footer'
+         document.body.appendChild(eleE)
+      }
+   }
+
+   export class Page {
+      constructor () {
+         new Header()
+         new Content()
+         new Footer()
+      }
+   }
+}
+```
+到这就解决了全局变量的问题，全局变量只剩下了一个`Page`，这是符合我们预期的，这时我们还应该修改下我们的`index.html`文件，因为之前的调用方式是直接实例化`Page`类，现在有了命名空间，我们需要修改成`new Home.Page()`。
+::: warning 注意
+在`page.ts`文件中我们需要将使用的`page`类使用`export`导出
+:::
+::: tip 说明
+完整demo地址：<a href="https://github.com/SuperLuckyYU/Ts-namespace-demo" target="_black">https://github.com/SuperLuckyYU/Ts-namespace-demo</a>
+:::
 
 
 
