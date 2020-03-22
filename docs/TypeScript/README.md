@@ -858,7 +858,7 @@ class Page {
    }
 }
 ```
-之后我们再我们的`index.html`中引入`./dist/page.js`文件，并且实例化下`page`类，从新打包编译下，这时候我们打开i`ndex.html`页面就可以看到页面上已经有内容了，这里顺带提下，我们每次修改代码都需要重新执行`tsc`命令来打包编译`ts`文件，这里我们可以使用命令`tsc -w`来进行一个监听。回到浏览器的页面上的控制台我们来看，这个时候你会发现`Header`、`Content`、`Footer`、`Page`这些都是全局体变量，其实我们再项目开发的时候要尽量的去避免声明全局变量，这个时候我们可以使用`namespcae`来解决这个问题，回到我们的`page.ts`文件中我们来做下修改：
+&emsp;&emsp;之后我们再我们的`index.html`中引入`./dist/page.js`文件，并且实例化下`page`类，从新打包编译下，这时候我们打开i`ndex.html`页面就可以看到页面上已经有内容了，这里顺带提下，我们每次修改代码都需要重新执行`tsc`命令来打包编译`ts`文件，这里我们可以使用命令`tsc -w`来进行一个监听。回到浏览器的页面上的控制台我们来看，这个时候你会发现`Header`、`Content`、`Footer`、`Page`这些都是全局体变量，其实我们再项目开发的时候要尽量的去避免声明全局变量，这个时候我们可以使用`namespcae`来解决这个问题，回到我们的`page.ts`文件中我们来做下修改：
 ```ts
 namespace Home {
    class Header {
@@ -901,6 +901,143 @@ namespace Home {
 ::: tip 说明
 完整demo地址：<a href="https://github.com/SuperLuckyYU/Ts-namespace-demo" target="_black">https://github.com/SuperLuckyYU/Ts-namespace-demo</a>
 :::
+&emsp;&emsp;我们接着上面写的`demo`来说，现在我们再写一个命名空间，名字叫做`Components`，我们将之前之前写在`page.ts`中的具体方法实现抽离到`Components`命名空间中去，然后在`page.ts`中去使用，这时，我们新建一个`components.ts`文件：
+```ts
+// components.ts
+namespace Components {
+   export class Header {
+      constructor () {
+         const eleE = document.createElement('div')
+         eleE.innerText = 'This is header'
+         document.body.appendChild(eleE)
+      }
+   }
+
+   export class Content {
+      constructor () {
+         const eleE = document.createElement('div')
+         eleE.innerText = 'This is content'
+         document.body.appendChild(eleE)
+      }
+   }
+
+   export class Footer {
+      constructor () {
+         const eleE = document.createElement('div')
+         eleE.innerText = 'This is footer'
+         document.body.appendChild(eleE)
+      }
+   }
+}
+// page.ts
+namespace Home {
+   export class Page {
+      constructor () {
+         new Components.Header()
+         new Components.Content()
+         new Components.Footer()
+      }
+   }
+}
+```
+&emsp;&emsp;到现在为止代码是无法运行的，因为打包会生成两份js文件，分别为：`page.js`、`components.js`文件，需要我们再`index.html`文件中引入我们的`components.js`文件，我们也可以将所有的打包文件统一合并到一个`js`文件中去，我们修改下`ts`的配置文件：
+```json
+"module": "amd",
+"outFile": "./dist/page.js",
+```
+&emsp;&emsp;这时我们在`index.html`中只需要引入一个`js`文件即可。回过头来看我们的`page.ts`我们会发现命名空间之间的引入非常的不直观，我们可以声明下命名空间之间的依赖声明：
+```ts
+///<reference path='./components.ts' />
+namespace Home {
+   export class Page {
+      constructor () {
+         new Components.Header()
+         new Components.Content()
+         new Components.Footer()
+      }
+   }
+}
+```
+命名空间中还可以暴露`interface`语法：
+```ts
+// components.ts
+namespace Components {
+   exports interface User {
+      name: string;
+   }
+}
+
+// page.ts
+namespace Home {
+   export class Page {
+      user: Components.User = {
+         name: 'haochyk'
+      }
+      constructor () {
+         new Components.Header()
+         new Components.Content()
+         new Components.Footer()
+      }
+   }
+}
+```
+在命名空间中还可以使用子的命名空间：
+```ts
+// components.ts
+namespace Components {
+   exports namespace SubComponents {
+      exports class Test {}
+   }
+}
+```
+## Import对应的模块化-缺代码
+我们可以通过`es6`的`import`和`export`语法在`TypeScript`中做模块化的组织：
+```ts
+// page.ts
+import { Header, Content, Footer } from './components.ts'
+export default class Page {
+   constructor () {
+      new Header()
+      new Content()
+      new Footer()
+   }
+}
+// components.js
+export class Header {
+   constructor () {
+      const eleE = document.createElement('div')
+      eleE.innerText = 'This is header'
+      document.body.appendChild(eleE)
+   }
+}
+
+export class Content {
+   constructor () {
+      const eleE = document.createElement('div')
+      eleE.innerText = 'This is content'
+      document.body.appendChild(eleE)
+   }
+}
+
+export class Footer {
+   constructor () {
+      const eleE = document.createElement('div')
+      eleE.innerText = 'This is footer'
+      document.body.appendChild(eleE)
+   }
+}
+```
+&emsp;&emsp;这时我们来看下打包后的`page.js`文件内容你会发现被打包成了`AMD`规范的模块化代码了，这个时候我们是没办法直接在浏览器上跑起来的，因为`AMD`这种规范的代码浏览器是没办法识别的，浏览器需要有解析的工具才能帮助我们识别`define`这种语法，之所以会变成`AMD`语法的代码是因为我们在`ts`的配置文件中将`module`修改为了`amd`，如果想让浏览器支持，需要我们在入口文件也就是`index.html`中引入`require.js`做兼容，然后对`index.html`做下修改：
+```js
+require(['page'], function (page) {
+   new page.default()
+})
+```
+&emsp;&emsp;现在我们可以看到现在的代码编译过后需要引入各种像`require`这种库相对来说比较麻烦，实际上在用`TypeScript`做前端代码编写的时候一般我们会在项目中引入`webpack`来帮助我们对代码做进一步的编译，这时我们就不需要引入`require`这些步骤了，`webpack`它可以做的更完善。
+## 使用Parcel打包TS代码
+&emsp;&emsp;`Parcel`是和`Webpack`相类似的一个打包工具，但是它不需要做过多额外的配置，之前我们使用`import`的时候需要引入`require`这种方式是比较麻烦的，使用`parcel`则会变得非常简单，在我们的入口文件`index.html`中直接引入`ts`文件，然后安装`parcel`，执行命令：`npm install parcel@next -D`，接着我们再`package.json`中写一个`script`命令：`test: parcel ./src/index.html`，它会帮助你自动起一个服务器，打开服务器地址你就会发现，代码正常运行了，这是因为它将我们的`ts`文件进行了编译，编译成了浏览器可以执行的`js`文件
+
+
 
 
 
