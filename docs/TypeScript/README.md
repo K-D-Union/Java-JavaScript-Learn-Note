@@ -1036,6 +1036,79 @@ require(['page'], function (page) {
 &emsp;&emsp;现在我们可以看到现在的代码编译过后需要引入各种像`require`这种库相对来说比较麻烦，实际上在用`TypeScript`做前端代码编写的时候一般我们会在项目中引入`webpack`来帮助我们对代码做进一步的编译，这时我们就不需要引入`require`这些步骤了，`webpack`它可以做的更完善。
 ## 使用Parcel打包TS代码
 &emsp;&emsp;`Parcel`是和`Webpack`相类似的一个打包工具，但是它不需要做过多额外的配置，之前我们使用`import`的时候需要引入`require`这种方式是比较麻烦的，使用`parcel`则会变得非常简单，在我们的入口文件`index.html`中直接引入`ts`文件，然后安装`parcel`，执行命令：`npm install parcel@next -D`，接着我们再`package.json`中写一个`script`命令：`test: parcel ./src/index.html`，它会帮助你自动起一个服务器，打开服务器地址你就会发现，代码正常运行了，这是因为它将我们的`ts`文件进行了编译，编译成了浏览器可以执行的`js`文件
+## 描述文件中的全局类型
+&emsp;&emsp;首先我们来说为什么要安装或者手写这种描述文件（类型定义文件），它是帮助我们的ts文件理解我们引入的js文件或者js库里面的内容的，因为这种js库里面没有ts里面要求的类型的概念，所以在ts文件里去引入js库的时候，ts不能理解库里的语法，所以我们需要.d.ts的类型定义文件帮助ts去理解。当然我们也可以书写这种类型定义文件。接下来就是我们的主题内容，如何在描述文件（.d.ts文件）中定义全局类型：<br />
+这里我们以引入JQuery库为例来写的描述文件：
+```ts
+// 全局变量 注意全局类型都要使用declare
+declare var $: (param: () => void) => void
+// 全局函数  函数重载
+interface JQueryInstance {
+   html: (html: string) => JQueryInstance;
+}
+declare function $(readyFunc: () => void): void
+declare function $(selector: string): JQueryInstance
+// 如何对对象进行类型定义，以及对类进行类型定义，以及命名空间的嵌套
+namespace $ {
+   namespace fn {
+      class init {}
+   }
+}
+// 使用interface的方式实现了函数重载，如何$既是函数又是对象的话，这种方式就不太好写了，只能使用上面那种方式
+interface JQueryInstance {
+   (readyFunc: () => void): void;
+   (selector: string): JQueryInstance;
+}
+declare var $: JQueryInstance;
+```
+:::warning 注意
+定义函数的时候有一个函数重载的机制，同一个函数的名字可以去定义多个这样的全局函数，它会根据你参数的不同理解不同。
+:::
+## 模块代码的类型描述文件
+&emsp;&emsp;我们以es6为例来介绍下载.d.ts文件中声明些模块化：
+```ts
+declare module 'JQuery' {
+   interface JQueryInstance {
+      html: (html: string) => JQueryInstance;
+   }
+   function $(readyFunc: () => void): void
+   function $(selector: string): JQueryInstance
+   namespace $ {
+      namespace fn {
+         class init {}
+      }
+   }
+   export = $
+}
+```
+:::warning 注意
+一、定义模块的时候，模块后面的名称要与ts文件中引入的名称保持一致。<br />
+二、而且里面我们就不再需要写declare关键字了。<br />
+三、一定要将外部要使用的东西使用export导出出去。
+:::
+## 泛型中使用keyof语法的使用
+&emsp;&emsp;当我们去定义一个类型的时候，除了可以让它是一个基本类型如：`string`、`number`，也可以是`interface`或者是对象的这种复杂类型，实际上现在我们甚至可以让它是一个固定的字符串，正因为类型可以是一个固定字符串的原理帮助，我们才可以使用`keyof`的语法，`keyof`顾名思义是去循环遍历接口内容，然后让泛型成为接口中某一项的具体字符串。在未来如果你有一个类里有一个对象，然后你想根据`index`或者`key`值去获取对象中某一项内容又想去推断出内容的类型的时候你可以使用`T extends keyof Person`这种复杂语法解决这个问题。<br />
+我们来看一个应用场景的例子：
+```ts
+interface Person {
+   name: string;
+   age: number;
+   gerder: string;
+}
+class Teacher {
+   construct (private info: Person) {}
+   getInfo<T extends keyof Person> (key: T): Person[T] {
+      return this.info[key]
+   }
+}
+const teacher = new Teacher({
+   name: 'haochyk',
+   age: 18,
+   gerder: 'male',
+})
+const info = teacher.getInfo('name')
+console.log(info)
+```
 
 
 
