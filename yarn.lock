@@ -1022,6 +1022,13 @@
   dependencies:
     nprogress "^0.2.0"
 
+"@vuepress/plugin-nprogress@^1.4.0":
+  version "1.5.2"
+  resolved "https://registry.npm.taobao.org/@vuepress/plugin-nprogress/download/@vuepress/plugin-nprogress-1.5.2.tgz#3be249ee070380d0aca2bd2fb62eab6b4e284d1b"
+  integrity sha1-O+JJ7gcDgNCsor0vti6ra04oTRs=
+  dependencies:
+    nprogress "^0.2.0"
+
 "@vuepress/plugin-register-components@^1.3.1":
   version "1.3.1"
   resolved "https://registry.npm.taobao.org/@vuepress/plugin-register-components/download/@vuepress/plugin-register-components-1.3.1.tgz?cache=0&sync_timestamp=1582188515499&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40vuepress%2Fplugin-register-components%2Fdownload%2F%40vuepress%2Fplugin-register-components-1.3.1.tgz#0f0683b9f69542d3e7a6481e48011d623648b56b"
@@ -7373,6 +7380,13 @@ vuepress-plugin-container@^2.0.2:
   integrity sha1-aIweWpcJobhlhgW8ruWAs6uxnRY=
   dependencies:
     markdown-it-container "^2.0.0"
+
+vuepress-plugin-nprogress@^1.1.6:
+  version "1.1.7"
+  resolved "https://registry.npm.taobao.org/vuepress-plugin-nprogress/download/vuepress-plugin-nprogress-1.1.7.tgz#53c5d7606e121c9c29f93b76e58bd6b3f6ac2a28"
+  integrity sha1-U8XXYG4SHJwp+Tt25YvWs/asKig=
+  dependencies:
+    nprogress "^0.2.0"
 
 vuepress-plugin-smooth-scroll@^0.0.3:
   version "0.0.3"
