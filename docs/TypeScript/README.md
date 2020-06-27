@@ -1037,8 +1037,8 @@ require(['page'], function (page) {
 ## 使用Parcel打包TS代码
 &emsp;&emsp;`Parcel`是和`Webpack`相类似的一个打包工具，但是它不需要做过多额外的配置，之前我们使用`import`的时候需要引入`require`这种方式是比较麻烦的，使用`parcel`则会变得非常简单，在我们的入口文件`index.html`中直接引入`ts`文件，然后安装`parcel`，执行命令：`npm install parcel@next -D`，接着我们再`package.json`中写一个`script`命令：`test: parcel ./src/index.html`，它会帮助你自动起一个服务器，打开服务器地址你就会发现，代码正常运行了，这是因为它将我们的`ts`文件进行了编译，编译成了浏览器可以执行的`js`文件
 ## 描述文件中的全局类型
-&emsp;&emsp;首先我们来说为什么要安装或者手写这种描述文件（类型定义文件），它是帮助我们的ts文件理解我们引入的js文件或者js库里面的内容的，因为这种js库里面没有ts里面要求的类型的概念，所以在ts文件里去引入js库的时候，ts不能理解库里的语法，所以我们需要.d.ts的类型定义文件帮助ts去理解。当然我们也可以书写这种类型定义文件。接下来就是我们的主题内容，如何在描述文件（.d.ts文件）中定义全局类型：<br />
-这里我们以引入JQuery库为例来写的描述文件：
+&emsp;&emsp;首先我们来说为什么要安装或者手写这种描述文件（类型定义文件），它是帮助我们的`ts`文件理解我们引入的js文件或者js库里面的内容的，因为这种`js`库里面没有`ts`里面要求的类型的概念，所以在`ts`文件里去引入`js`库的时候，`ts`不能理解库里的语法，所以我们需要`.d.ts`的类型定义文件帮助`ts`去理解。当然我们也可以书写这种类型定义文件。接下来就是我们的主题内容，如何在描述文件（`.d.ts`文件）中定义全局类型：<br />
+这里我们以引入`JQuery`库为例来写的描述文件：
 ```ts
 // 全局变量 注意全局类型都要使用declare
 declare var $: (param: () => void) => void
@@ -1082,9 +1082,9 @@ declare module 'JQuery' {
 }
 ```
 :::warning 注意
-一、定义模块的时候，模块后面的名称要与ts文件中引入的名称保持一致。<br />
-二、而且里面我们就不再需要写declare关键字了。<br />
-三、一定要将外部要使用的东西使用export导出出去。
+一、定义模块的时候，模块后面的名称要与`ts`文件中引入的名称保持一致。<br />
+二、而且里面我们就不再需要写`declare`关键字了。<br />
+三、一定要将外部要使用的东西使用`export`导出出去。
 :::
 ## 泛型中使用keyof语法的使用
 &emsp;&emsp;当我们去定义一个类型的时候，除了可以让它是一个基本类型如：`string`、`number`，也可以是`interface`或者是对象的这种复杂类型，实际上现在我们甚至可以让它是一个固定的字符串，正因为类型可以是一个固定字符串的原理帮助，我们才可以使用`keyof`的语法，`keyof`顾名思义是去循环遍历接口内容，然后让泛型成为接口中某一项的具体字符串。在未来如果你有一个类里有一个对象，然后你想根据`index`或者`key`值去获取对象中某一项内容又想去推断出内容的类型的时候你可以使用`T extends keyof Person`这种复杂语法解决这个问题。<br />
@@ -1109,6 +1109,189 @@ const teacher = new Teacher({
 const info = teacher.getInfo('name')
 console.log(info)
 ```
+## 类的装饰器
+&emsp;&emsp;实际上就是对类的修饰工具，装饰器本身是一个函数，装饰器通过`@`符号来使用，装饰器的运行时刻是在类被创建的时候就会被调用，而不是类被实例化的时候再执行，装饰器接收的参数是构造函数，一个类可以使用多个装饰器，注意一个类绑定多个装饰器的时候，执行顺序是从下到上，也就是后绑定的装饰器先执行。当你使用`Decorator`装饰器修饰类的时候，`TS`可能会报错提示说：`Decorator`这种新的装饰器语法实际上在`TS`里面它是一个实验性质的语法，所以我们要想使用它，我们需要打开`tsconfig.json`中的对实验类型的支持注释打开：
+```json
+/* Experimental Options */
+"experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+"emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
+```
+&emsp;&emsp;我们先来看一个最简单的类的装饰器demo：
+```ts
+function testDecorator(constructor: any) {
+   constructor.prototype.getName = () => {
+      console.log('decorator')
+   }
+}
+
+@testDecorator
+class Test {}
+const test = new Test()
+console.log((test as any).getName())
+```
+&emsp;&emsp;在某种情况下，我需要装饰器来装饰，但是有的时候我这个类不需要装饰器来装饰，也就是说有一些判断在里面，这个时候可以使用工厂模式
+```ts
+function testDecorator(flag: boolean) {
+   if (flag) {
+      return function (constructor: any) {
+         constructor.prototype.getName = () => {
+            console.log('decorator')
+         }
+      }
+   } else {
+      return function (constructor: any) {}
+   }
+}
+
+@testDecorator(true)
+class Test {}
+const test = new Test()
+console.log((test as any).getName())
+```
+&emsp;&emsp;上述例子是一个容易理解，但是不太正规的一种写法，接下我们来写一些比较正规而且稍微复杂一点的实例：
+```ts
+function testDecorator<T extends new (...args: any[]) => any>(constructor: T) {
+   return class extends constructor {
+      name = 'haochyk'
+      getName () {
+         return this.name
+      }
+   }
+}
+
+@testDecorator
+class Test {
+   constructor (private name: string) {}
+}
+const test = new Test('TT')
+console.log((test as any).getName()) // => 'haochyk'
+```
+当我们在写代码的时候会发现，必须`test as any`才可以，否则会报错，这是因为`getName`方法是装饰器偷偷给扩展的，`TS`并不知道，所以会认为类中没有这个方法。要解决这个问题可以使用工厂模式，来看这个实例代码：
+```ts
+function testDecorator () {
+   function<T extends new (...args: any[]) => any> (constructor: T) {
+      return class extends constructor {
+         name = 'haochyk'
+         getName () {
+            return this.name
+         }
+      }
+   }
+}
+
+const Test = testDecorator()(class Test {
+   constructor (private name: string) {}
+})
+const test = new Test('TT')
+console.log(test.getName()) // => 'haochyk'
+```
+## 方法装饰器
+&emsp;&emsp;装饰器不仅可以用在类上，还可以用在类中的属性、方法、访问器上，我们先来看下类中的方法装饰器，类中的方法装饰器接收三个参数，分别为target、key、descriptor。
+我们来分别说下这三个参数分别代表的含义：<br />
+&emsp;&emsp;target：目标类的prototype<br />
+&emsp;&emsp;key：目标方法的名称<br />
+&emsp;&emsp;descriptor：属性描述符<br />
+与静态方法不同的是，静态方法的装饰器target参数代表的是目标类的构造函数。
+方式装饰器Demo：
+``` ts
+function getNameDecorator (target: any, key: string, descriptor: PropertyDescriptor) {
+   descriptor.writable = false
+}
+
+class Test {
+   constructor (private name: string) {}
+   @getNameDecorator
+   getName () {
+      return this.name
+   }
+}
+const test = new Test('haochyk')
+console.log(test.getName())
+```
+::: danger 注意
+访问器的装饰器跟方法的装饰器基本一样，但是注意，同一个装饰器不能同时装饰一个类的get、set。
+:::
+## 属性装饰装饰器
+&emsp;&emsp;属性装饰器与方法和访问器的装饰器接收参数的个数有所不同，它只能接受两个参数：<br />
+&emsp;&emsp;target：目标类的prototype<br />
+&emsp;&emsp;key：目标属性的名称<br />
+有两个点需要提及下，分别是：<br />
+如果要修改属性的descriptor，我们可以在装饰器中返回一个descriptor：
+``` ts
+function nameDecorator (target: any, key: string): any {
+   const descriptor: PropertyDescriptor = {
+      writable: false
+   }
+   return descriptor
+}
+
+class Test {
+   @nameDecorator
+   name = 'Haochyk'
+}
+const test = new Test()
+test.name = 'hao'
+```
+但是如果你要修改属性的值，是修改不了的，因为你在装饰器中对值得修改是在类的原型对象上属性的修改，而你在类中定义的属性是绑定在了类的实例上，在取值的时候优先找的是实例上的变量，如果没有才会找原型对象上的变量
+``` ts
+function nameDecorator (target: any, key: string) {
+   target[key] = 'hao'
+}
+
+class Test {
+   @nameDecorator
+   name = 'Haochyk'
+}
+const test = new Test()
+console.log(test.name) // => 'Haochyk'
+```
+## 参数装饰器
+&emsp;&emsp;参数装饰器接受三个参数：<br />
+&emsp;&emsp;target：目标类的prototype<br />
+&emsp;&emsp;key：所在方法的名称<br />
+&emsp;&emsp;paramsIndex：装饰的参数所在的下标<br />
+:::warning 注意
+一、定义模块的时候，模块后面的名称要与`ts`文件中引入的名称保持一致。<br />
+二、而且里面我们就不再需要写`declare`关键字了。<br />
+三、一定要将外部要使用的东西使用`export`导出出去。
+:::
+## 装饰器实际使用的小案例
+``` ts
+const userInfo: any = undefined
+
+function catchError (msg: string) {
+   return function (target: any, key: string, descriptor: PropertyDescriptor) {
+      const fn = descriptor.value
+      try {
+         fn()
+      } catch (e) {
+         console.log(msg + '存在问题')
+      }
+   }
+}
+
+class Test {
+   @catchError('userInfo.name')
+   getUserName () {
+      console.log(userInfo.name)
+   }
+   getUserAge ('userInfo.age') {
+      console.log(userInfo.age)
+   }
+}
+
+const test = new Test()
+console.log(test.getUserName())
+console.log(test.getUserAge())
+```
+:::tip 说明
+reflect-metadata库，可以帮助我们在类上面或者类的属性上面去存储一些数据，并且方便得进行数据的反射获取，具体使用请查看[官方介绍](https://github.com/rbuckton/reflect-metadata)
+:::
+:::tip 装饰器的执行顺序
+方法装饰器 -> 类装饰器
+:::
+
+
 
 
 

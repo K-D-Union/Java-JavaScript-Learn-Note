@@ -61,5 +61,5 @@ module.exports = {
             },
         ],
     },
-    plugins: ['@vuepress/active-header-links', '@vuepress/back-to-top', '@vuepress/nprogress']
+    plugins: ['@vuepress/active-header-links', '@vuepress/back-to-top', '@vuepress/nprogress'],
 }
