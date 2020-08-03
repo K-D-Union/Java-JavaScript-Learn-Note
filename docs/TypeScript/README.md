@@ -2,9 +2,11 @@
 sidebar: auto
 title: TypeScript
 ---
+
 # TypeScript
 
 ## 参考说明
+
 ::: tip 说明
 本篇博客由慕课网视频[TypeScript －系统入门到项目实战](https://coding.imooc.com/class/412.html)(Dell-Lee)阅读整理而来，观看视频请支持正版。
 :::
@@ -37,70 +39,100 @@ b = 456;
 3. 代码语意更清晰易懂。
 
 ## TypeScript 基础环境搭建
-### 安装Node
+
+### 安装 Node
+
 首先安装`n`模块：
+
 ```sh
 sudo npm install -g n
 ```
+
 升级`node.js`到稳定最新版本：
+
 ```sh
 sudo  n stable
 ```
+
 升级到最新版：
+
 ```sh
 sudo n latest
 ```
+
 升级到指定版本：
+
 ```sh
 sudo  n vxx.xx.xx
 ```
-### 更改VScode配置
-打开VSCode更改quote -> single，tab  -> 2，Format On Save -> true
-### 安装VScode插件
+
+### 更改 VScode 配置
+
+打开 VSCode 更改 quote -> single，tab -> 2，Format On Save -> true
+
+### 安装 VScode 插件
+
 插件应用市场搜索`Prettier`并安装
+
 ```sh
 npm install typescript@3.6.4 -g
 npm install -g ts-node
 ```
+
 运行`ts`文件
+
 ```sh
 ts-node xx.ts
 ```
+
 ## 静态类型的深度理解
+
 &emsp;&emsp;静态类型的变量不仅类型不能修改，而且意味着这个变量的属性和方法基本已经确定了。正是因为这样，我们在编辑器使用静态类型的时候会给我们很好的语法提示。
+
 ## 基础类型和对象类型
+
 ### 基础类型
+
 基础类型：`number`、`string`、`bollean`、`null`、`undefined`、`symbol`、`void`
+
 ```ts
 const count: number = 123
 const name: String = 'haochyk'
 ...
 ```
+
 ### 对象类型
+
 对象类型：`{}`、`Class`、`function`、`[]`
+
 ```ts
 const developers: {
-   name: string,
-   age: number,
+  name: string;
+  age: number;
 } = {
-   name: 'haochyk',
-   age: 21,
-}
-const numbers: number[] = [1, 2, 3]
+  name: "haochyk",
+  age: 21
+};
+const numbers: number[] = [1, 2, 3];
 class Person {}
-const haochyk: Person = new Person()
+const haochyk: Person = new Person();
 const getTotal: () => number = () => {
-   return 123
-}
-const date = new Date()
+  return 123;
+};
+const date = new Date();
 ```
-### 其他的case
+
+### 其他的 case
+
 在实际工作中我们经常会遇到这种情况，一个`JSON`字符串转`JSON`对象：
+
 ```ts
-const rowData = '{"name": "haochyk"}'
-const newData = JSON.parse(rowData)
+const rowData = '{"name": "haochyk"}';
+const newData = JSON.parse(rowData);
 ```
+
 但是这种情况我们使用编辑器将鼠标放置在`newData`上我们会发现`ts`无法推断出`newData`的类型，结果为`any`，像这种使用内置函数方法的情况，我们可以这样处理：
+
 ```ts
 interface Person = {
    name: 'string';
@@ -108,124 +140,165 @@ interface Person = {
 const rowData = '{"name": "haochyk"}'
 const newData: Person = JSON.parse(rowData)
 ```
+
 另外一种情况，我们声明了一个变量，初始变量类型为`number`类型，但是我后面就是想将变量类型修改为`string`，这是个我们可以这样使用：
+
 ```ts
-let count: number | string = 1
-count  = '1'
+let count: number | string = 1;
+count = "1";
 ```
+
 ## 类型注解和类型推断
+
 ### 类型注解（`type annotation`）
+
 显示的声明一个变量数据类型的写法我们称之为类型注解
+
 ```ts
-let count: number
-count = 123
+let count: number;
+count = 123;
 ```
+
 ### 类型推断（`type inference`）
-TS会自动的去尝试分析变量的类型
+
+TS 会自动的去尝试分析变量的类型
+
 ```ts
-let count = 123
+let count = 123;
 ```
+
 如果 `TS` 能够自动分析变量类型，我们就什么都不需要做了。反之，我们就需要使用类型注解。
+
 ## 函数相关类型
-&emsp;&emsp;首先我们收一下TS的几种定义函数的方式和JS是一样的
+
+&emsp;&emsp;首先我们收一下 TS 的几种定义函数的方式和 JS 是一样的
+
 ```js
-function hello () {}
-const hello = function () {}
-const hello = () => {}
+function hello() {}
+const hello = function() {};
+const hello = () => {};
 ```
+
 我们在写函数类型的时候：
+
 ```ts
-function add (first: number, second: number) {
-   return first + second
+function add(first: number, second: number) {
+  return first + second;
 }
 ```
-函数的入参我们需要声明类型，TS会根据入参的类型推断出返回结果的类型。
+
+函数的入参我们需要声明类型，TS 会根据入参的类型推断出返回结果的类型。
 但是有时候我们也需要声明函数的返回值类型，比如以下这种情况：
+
 ```ts
-function add (first: number, second: number) {
-   return first + second + ''
+function add(first: number, second: number) {
+  return first + second + "";
 }
-const total = add(1, 2)
+const total = add(1, 2);
 ```
+
 这种是由于我们笔误导致我们期望与实际不符，这是就会报错，所以我们应该修改为这种的进行双重校验：
+
 ```ts
-function add (first: number, second: number): number {
-   return first + second
+function add(first: number, second: number): number {
+  return first + second;
 }
 //或
 const add: (first: number, second: number) => number = (first, second) => {
-   return first + second
-}
-const total = add(1, 2)
+  return first + second;
+};
+const total = add(1, 2);
 ```
+
 另外，还有几种常用的函数返回值类型：
 `void`通过字面意思，我们大致就可以理解它的意思：空白，即没有返回值
+
 ```ts
-function sayHello (): void {
-   console.log('hello')
+function sayHello(): void {
+  console.log("hello");
 }
 ```
+
 `never`这个字面意思可能就不是很容易理解，它的意思是函数永远不会执行到最后,我们通过代码来看：
+
 ```ts
-function errorEmiter (): never {
-   while (true) {}
-   return true
+function errorEmiter(): never {
+  while (true) {}
+  return true;
 }
 //或
-function errorEmiter (): never {
-   throw new Error()
-   return true
+function errorEmiter(): never {
+  throw new Error();
+  return true;
 }
 ```
+
 还有一种我们常用的就是函数参数对象类型的解构：
+
 ```ts
-function add ({ first, second }): { first: number, second: number } {
-   return first + second
+function add({ first, second }): { first: number; second: number } {
+  return first + second;
 }
-const total = add(1, 2)
+const total = add(1, 2);
 ```
+
 ## 数组和元组
+
 在`TS`中数组是和`JS`中是一样的，比如我们声明一个数组：
-``` ts
-const numberArr = [1, 2, 3]
+
+```ts
+const numberArr = [1, 2, 3];
 ```
+
 在`TS`中我们同样可以声明数组每一项类型（基础类型和对象类型），首先我们来看基础类型：
+
 ### 基础类型
-TS中我们可以使用任意基础类型来约束数组内容，见如下代码：
-``` ts
-const numberArr: number[] = [1, 2, 3] // 同样这种情况不定义数组类型也是可以的，TS会自动帮助我们推断出数组类型为number
-const stringArr: string[] = ['1', '2', '3']
+
+TS 中我们可以使用任意基础类型来约束数组内容，见如下代码：
+
+```ts
+const numberArr: number[] = [1, 2, 3]; // 同样这种情况不定义数组类型也是可以的，TS会自动帮助我们推断出数组类型为number
+const stringArr: string[] = ["1", "2", "3"];
 ```
+
 当我们数组中的内容多一项少一项或者某一项的内容类型不是我们约束的类型的话，都会飘红。
 但是在很多应用场景中数组内不仅有`number`类型还会有其他类型的值，比如说：`string`，那我们应该如何来约定数组类型呢：
-``` ts
+
+```ts
 const arr: (string ｜ number) = [1, '2', 3]
 ```
+
 ### 对象类型
+
 同样我们也可以使用对象类型来约束数组内容，比如：
-``` ts
-const objectArr: { name: string, age: number }[] = [
-   {
-      name: 'haochyk',
-      age: 18,
-   },
-]
+
+```ts
+const objectArr: { name: string; age: number }[] = [
+  {
+    name: "haochyk",
+    age: 18
+  }
+];
 ```
+
 如果我们的对象内容非常多的话，这样写代码就显的非常不美观了，我们可以使用类型别名(`type alias`)来解决这个问题：
-``` ts
+
+```ts
 type User = {
-   name: string;
-   age: number;
-}
+  name: string;
+  age: number;
+};
 const objectArr: User[] = [
-   {
-      name: 'haochyk',
-      age: 18,
-   },
-]
+  {
+    name: "haochyk",
+    age: 18
+  }
+];
 ```
+
 值得我们注意的是`class`类，`TS`不会强制要求必须返回实例对象，所以只要数据内容格式一致都是被允许的，比如以下这种写法：
-``` ts
+
+```ts
 class User = {
    name: string;
    age: number;
@@ -238,120 +311,142 @@ const objectArr: User[] = [
    },
 ]
 ```
+
 ### 元组
+
 我们首先说下什么是元组，元组（`tuple`）可以看作是数组的拓展，它表示已知元素数量和类型的数组。我们通过一个实例来了解下到底什么是元组，以及元组的应用场景是什么：
 首先我们来看如何声明一个元组：
-``` ts
-const userInfo: [string, string, number] = ['haochy', 'male', 18]
+
+```ts
+const userInfo: [string, string, number] = ["haochy", "male", 18];
 ```
+
 数组也可以满足这种情况我们为什么要使用元组呢，比如以下这种情况:
 数组中的长度是固定的，也就是我们是知道数组具体有几项内容，也知道数组每一项的类型，比如说数组的第一项是名称，第二项是性别，第三项是年龄，当然前两项肯定是`string`类型，最后一项为`number`，用数组可以这样声明：
-``` ts
-const userInfo: ( string | number )[] = ['haochy', 'male', 18]
+
+```ts
+const userInfo: (string | number)[] = ["haochy", "male", 18];
 ```
+
 但是这样声明我们就控制不了数组内具体每一项的类型了，第一项我们可以修改成`number`类型，它不会报错，这样其实是不符合我们的预期的，所以元组就来了，它可以帮助我们做到这一点，来约束住数组的每一项：
 接下来我们来看下元组的应用场景，大致有：读取`excel`导出的文件、`csv`文件再转换为`js`的时候，使用元组比较好管理，像读取`csv`文件转为`js`的数据结构为这种类型：
-``` js
-[
-   ['haochyk', 'male', 18],
-]
+
+```js
+[["haochyk", "male", 18]];
 ```
+
 这个时候我们怎么来定义它的类型呢，可以这样来定义：
-``` ts
-const userInfoList: [string, string, number][] = [
-   ['haochyk', 'male', 18],
-]
+
+```ts
+const userInfoList: [string, string, number][] = [["haochyk", "male", 18]];
 ```
-## Interface接口
-首先我看来看一段代码，我们通过代码来讲解interface的具体知识点。
-``` ts
-function getPersonName (person: { name: string }) {
-   console.log(person.name)
+
+## Interface 接口
+
+首先我看来看一段代码，我们通过代码来讲解 interface 的具体知识点。
+
+```ts
+function getPersonName(person: { name: string }) {
+  console.log(person.name);
 }
-function setPersonName (person: { name: string }, name: string) {
-   person.name = name
+function setPersonName(person: { name: string }, name: string) {
+  person.name = name;
 }
 ```
-上面两个简单的方法我们可以看出person参数后的类型定义我们需要重复的写两遍，这个时候我们将重复的类型定义用interface接口的形式抽离出来：
-``` ts
+
+上面两个简单的方法我们可以看出 person 参数后的类型定义我们需要重复的写两遍，这个时候我们将重复的类型定义用 interface 接口的形式抽离出来：
+
+```ts
 interface Person {
-   name: string;
-   age: number;
+  name: string;
+  age: number;
 }
-function getPersonName (person: Person): void {
-   console.log(person.name)
+function getPersonName(person: Person): void {
+  console.log(person.name);
 }
-function setPersonName (person: Person, name: string): void {
-   person.name = name
+function setPersonName(person: Person, name: string): void {
+  person.name = name;
 }
 ```
+
 当然还有另外一种方法可以实现相通的效果就是使用类型定义：`type alias`:
-``` ts
+
+```ts
 type Person = {
-   name: string;
-   age: number;
+  name: string;
+  age: number;
+};
+function getPersonName(person: Person): void {
+  console.log(person.name);
 }
-function getPersonName (person: Person): void {
-   console.log(person.name)
-}
-function setPersonName (person: Person, name: string): void {
-   person.name = name
+function setPersonName(person: Person, name: string): void {
+  person.name = name;
 }
 ```
-`interface`和`type`类似但又不完全相同，不同点就是interface只能代表一个函数或者一个对象，它不能代表一个基础类型：
-``` ts
-type Person = string
+
+`interface`和`type`类似但又不完全相同，不同点就是 interface 只能代表一个函数或者一个对象，它不能代表一个基础类型：
+
+```ts
+type Person = string;
 interface Person {
-   name: string;
-   age: number;
+  name: string;
+  age: number;
 }
 ```
+
 ::: tip 提示
 在`TypeScript`里面一个通用型的规范就是：如果能用接口来表述一个别名的话我们就用接口的方式，实在不行我们才用类型别名
 :::
 在有些情况下我们不需要传递`age`属性该怎么办，我们不传递`age`参数`ts`又会报错，我们可以这样来写：
-``` ts
+
+```ts
 interface Person {
    readyonly name: string;
    age?: number;
 }
 ```
+
 这样的意思就是`age`属性可有可无，还有一个修饰符：`readonly`意思为属性只读。
 这里值得我们注意的一点就是，如果我们传递参数的时候，多传递了一个`sex`属性：
-``` ts
+
+```ts
 interface Person {
-   name: string;
-   age?: number;
+  name: string;
+  age?: number;
 }
-function getPersonName (person: Person): void {
-   console.log(person.name)
+function getPersonName(person: Person): void {
+  console.log(person.name);
 }
-function setPersonName (person: Person, name: string): void {
-   person.name = name
+function setPersonName(person: Person, name: string): void {
+  person.name = name;
 }
 const person = {
-   name: 'haochyk',
-   sex: 'male',
-}
+  name: "haochyk",
+  sex: "male"
+};
 // 不会报错
-getPersonName(person)
+getPersonName(person);
 // 报错
 getPersonName({
-   name: 'haochyk',
-   sex: 'male',
-})
+  name: "haochyk",
+  sex: "male"
+});
 ```
+
 这是因为，我们如果直接使用字面量的形式传参的话，`ts`会进行强校验，必须严格符合参数的类型定义，而如果我们使用缓存的形式，则不会，只要有类型定义该有的东西即可，多出一点东西也是可以的。
 如果我们只是确定参数对象有`name`属性，我们不确定有其他属性的时候我们可以这样来写：
-``` ts
+
+```ts
 interface Person {
    readyonly name: string;
    age?: number;
    [propName: string]: any;
 }
 ```
+
 接口里不仅可以存这样的属性和它的类型还可以存方法，比如我们定义`say`方法返回值的类型为`string`：
-``` ts
+
+```ts
 interface Person {
    readyonly name: string;
    age?: number;
@@ -359,261 +454,310 @@ interface Person {
    say(): string;
 }
 ```
+
 `Class`类是可以应用接口的，当一个类去应用接口时必须拥有接口里的属性，举个例子：
-``` ts
+
+```ts
 class user implements Person {
-   name = 'haochy';
-   say () {
-      return 'hello'
-   }
+  name = "haochy";
+  say() {
+    return "hello";
+  }
 }
 ```
+
 接口之间还可以互相继承，如下面这个例子：
-``` ts
+
+```ts
 interface Teacher extends Person {
-   teach(): string
+  teach(): string;
 }
 const teacher = {
-   name: 'haochyk',
-   age: 18,
-   say () {
-      return 'hello'
-   },
-   teach () {
-      return 'TypeScript'
-   }
-}
-setPersonName(teacher, 'haochyk')
+  name: "haochyk",
+  age: 18,
+  say() {
+    return "hello";
+  },
+  teach() {
+    return "TypeScript";
+  }
+};
+setPersonName(teacher, "haochyk");
 ```
+
 接口继承它会拥有`Person`接口下所有的属性和方法，同时还必须得有自己的属性或方法。
 接口自身除了可以定义属性、方法之外，其实它自身还可以定义函数：
-``` ts
+
+```ts
 interface SayHi {
-   (word: string): string
+  (word: string): string;
 }
-const say: SayHi = (word) => {
-   return word
-}
+const say: SayHi = word => {
+  return word;
+};
 ```
-同样`interface`还可以定义数组这样的索引类型，当我们去写这种接口的时候，`ts`最终会把把文件编译成js，但是最终编译后的`js`内并没有`interface`。
+
+同样`interface`还可以定义数组这样的索引类型，当我们去写这种接口的时候，`ts`最终会把把文件编译成 js，但是最终编译后的`js`内并没有`interface`。
 ::: danger 注意
 其实，`interface`就是在我们开发过程中`TypeScript`帮助我们做语法提示的一个工具。真正编译的时候会将这部分内容剔除掉。
 :::
+
 ## 类的定义与继承
+
 `TypeScript`中的类其实和`JavaScript`、`ES6`中的类很类似，不过在它的基础上`TypeScript`提供了更多的特性.
 我们先看一个最基础的类：
-``` ts
+
+```ts
 class Person {
-   name = 'haochyk';
-   getName () {
-      console.log(this.name)
-   }
+  name = "haochyk";
+  getName() {
+    console.log(this.name);
+  }
 }
 ```
+
 有了类之后我们可以通过类来创建一个实例，比如说：
-``` ts
+
+```ts
 class Person {
-   name = 'haochyk';
-   getName () {
-      return this.name
-   }
+  name = "haochyk";
+  getName() {
+    return this.name;
+  }
 }
-const person = new Person()
+const person = new Person();
 ```
+
 到这里我们就说了如何去定义一个类，以及如何在类里去定义方法。
 接着我们来说下类的继承：(在`ES6`里写类的继承其实是和`TypeScript`里是一样的)
-``` ts
+
+```ts
 class Person {
-   name = 'haochyk';
-   getName () {
-      return this.name
-   }
+  name = "haochyk";
+  getName() {
+    return this.name;
+  }
 }
 class Teacher extends Person {
-   getTeacherName () {
-      return 'hao'
-   }
+  getTeacherName() {
+    return "hao";
+  }
 }
-const teacher = new Teacher()
-console.log(teacher.getName()) // haochyk
-console.log(teacher.getTeacherName()) // hao
+const teacher = new Teacher();
+console.log(teacher.getName()); // haochyk
+console.log(teacher.getTeacherName()); // hao
 ```
+
 继承的意思就是，子类不仅可以使用父类的方法还可以使用自己的方法。
 类还有一个概念叫做重写，即在子类和父类中的同名方法，子类中的方法会覆盖掉父类中的方法，如果想要调用父类中的方法，我们可以使用`super`，例如：
-``` ts
+
+```ts
 class Teacher extends Person {
-   getName () {
-      return super.getName() + '1'
-   }
+  getName() {
+    return super.getName() + "1";
+  }
 }
-console.log(teacher.getName()) // haochyk1
+console.log(teacher.getName()); // haochyk1
 ```
+
 这同样也是`super`在开发中常用的应用场景：子类重写父类方法，如果需要调用父类方法可以使用`super`
+
 ## 类中的访问类型和构造器
+
 ### 访问类型
+
 什么是访问类型？我们在`ts`中定义一个类，我们实例化这个类，访问以及修改这个实例中的属性都是可以的，因为`ts`中类的属性默认是`public`访问类型。
 访问类型分为三种：`private`、`protected`、`public`。<br />
-* `private`： 仅在类内允许被调用
-* `protected`：类内或者继承的子类中允许被调用
-* `public`：类内外都可以允许被调用
-我们通过代码来看下这三个的区别：<br />
-首先`private`：
-``` ts
+
+- `private`： 仅在类内允许被调用
+- `protected`：类内或者继承的子类中允许被调用
+- `public`：类内外都可以允许被调用
+  我们通过代码来看下这三个的区别：<br />
+  首先`private`：
+
+```ts
 class Person {
-   private name = 'haochyk'
-   say () {
-      return this.name // 允许访问
-   }
+  private name = "haochyk";
+  say() {
+    return this.name; // 允许访问
+  }
 }
-const person = new Person()
-console.log(person.name) // ts报错
+const person = new Person();
+console.log(person.name); // ts报错
 ```
+
 `public`：
-``` ts
+
+```ts
 class Person {
-   public name = 'haochyk'
-   say () {
-      return this.name // 允许访问
-   }
+  public name = "haochyk";
+  say() {
+    return this.name; // 允许访问
+  }
 }
-const person = new Person()
-console.log(person.name) // 允许访问
+const person = new Person();
+console.log(person.name); // 允许访问
 ```
+
 `protected`：
-``` ts
+
+```ts
 class Person {
-   protected name = 'haochyk'
-   say () {
-      return this.name // 允许访问
-   }
+  protected name = "haochyk";
+  say() {
+    return this.name; // 允许访问
+  }
 }
 class Teacher {
-   teacherSay () {
-      return this.name // 允许访问
-   }
+  teacherSay() {
+    return this.name; // 允许访问
+  }
 }
-const person = new Person()
-console.log(person.name) // ts报错
+const person = new Person();
+console.log(person.name); // ts报错
 ```
+
 ### 构造器 (constructor)
+
 老样子，我们先来定义一个类：
-``` ts
+
+```ts
 class Person {
-   public name: string
-   constructor (name: string) {
-      this.name = name
-   }
+  public name: string;
+  constructor(name: string) {
+    this.name = name;
+  }
 }
-const person = new Person('haochyk')
-console.log(person.name) // haochyk
+const person = new Person("haochyk");
+console.log(person.name); // haochyk
 ```
+
 `constructor`这个方法会在类被实例化的时候自动执行，并且将实例化的参数传递给`constructor`这个方法。
 以上例子是比较传统的写法，我们先定义一个属性，然后在构造器中给属性赋值，`ts`提供了一个更简单的方法，这两种写法是等价的：
-``` ts
+
+```ts
 class Person {
-   constructor (public name: string) {}
+  constructor(public name: string) {}
 }
-const person = new Person('haochyk')
-console.log(person.name) // haochyk
+const person = new Person("haochyk");
+console.log(person.name); // haochyk
 ```
+
 如果继承中，子类要使用构造器，需要使用`super`，这时`super`是一个方法，它代表父类的构造函数，同时需要将父类构造函数需要的参数传递给`super`方法，即便父类没有构造器，子类也需要调用一个参数为空的`super()`，代码如下：
-``` ts
+
+```ts
 class Person {
-   constructor (public name: string) {}
+  constructor(public name: string) {}
 }
 class Teacher {
-   constructor (public age: number) {
-      super('haochyk')
-   }
+  constructor(public age: number) {
+    super("haochyk");
+  }
 }
-const teacher = new Teacher(18)
-console.log(teacher.name) // haochyk
-console.log(teacher.age) // 18
+const teacher = new Teacher(18);
+console.log(teacher.name); // haochyk
+console.log(teacher.age); // 18
 ```
-## Setter和Getter
+
+## Setter 和 Getter
+
 我们首先来说下`getter`和`setter`的作用是：其实是为了保护类的私有属性，对私有属性的一个加密，我们通过代码来看下：
-``` ts
+
+```ts
 class Demo {
-   constructor (private _name: string) {}
-   get name () {
-      return this._name + 'a48dsi39xls2'
-   }
-   set setName (name: string) {
-      this._name = name
-   }
+  constructor(private _name: string) {}
+  get name() {
+    return this._name + "a48dsi39xls2";
+  }
+  set setName(name: string) {
+    this._name = name;
+  }
 }
-const demo = new Demo('haocyk')
-console.log(demo.name) // 'haocyka48dsi39xls2'
-demo.setName('haochyk')
+const demo = new Demo("haocyk");
+console.log(demo.name); // 'haocyka48dsi39xls2'
+demo.setName("haochyk");
 ```
+
 然后我们再来说一下如何使用`TypeScript`来实现一个单例模式（一个类只能被实例化一次）:chestnut:：
-``` ts
+
+```ts
 class Demo {
-   private static instance: Demo;
-   private constructor () {}
-   static getInstance () {
-      if (!this.instance) {
-         this.instance = new Demo()
-      }
-      return this.instance
-   }
+  private static instance: Demo;
+  private constructor() {}
+  static getInstance() {
+    if (!this.instance) {
+      this.instance = new Demo();
+    }
+    return this.instance;
+  }
 }
-const demo = Demo.getInstance()
+const demo = Demo.getInstance();
 ```
+
 &emsp;&emsp;首先我们要做的第一件事情就是控制住类的构造函数不能在外部调用，所以我们把类的构造函数设置成私有属性，这个时候该如何实例化一个类呢:thinking:，我们在类中定义一个方法提供给外部使用，由于我们没办法实例化类该怎么调用实例化类上的方法，所以我们要用`static`，直接将方法挂载到类上而不是挂载到实例化对象上，这样我们就可以通过`demo.getInstance()`来实例化`demo`这个类了，但是换句话说了，这样还不是照样可以无限实例化类嘛:cold_sweat:，实例化出来的对象指针还都不是一样的，我们接着往下看，我们在类上在通过`static`的方式挂载一个属性，将它设置为私有属性，在`getInstance`方法中判断，如果是初始化第一次实例化这个类，我们就讲实例化对象绑定在这个`instance`属性上，最后返回出去，如果有的话，我们直接将`instance`返回出去，这样我们就实现了一个最简单的单例模式:100:。
+
 ## 抽象类
+
 &emsp;&emsp;抽象类的概念就是将类里面公用的东西提炼出来，再组成一个抽象类，抽象类里不仅可以有抽象方法还可以有具体的属性和方法，他与`interface`不同的是，`interface`是将接口中公用的东西提炼出来，而抽象类针对的是类，抽象类不能直接被实例化，但是他可以被继承，我们来看一个例子:chestnut:：
-``` ts
+
+```ts
 abstract class Gemo {
-   abstract getArea(): number //因为每个图形的具体实现面积的方法是不一样的，但是他们共同点是都应该有这个方法，所以我们把它修改为抽象方法，一旦你将这个方法定义为抽象方法就以为你不能写方法的实现，你只能定义下这个方法
+  abstract getArea(): number; //因为每个图形的具体实现面积的方法是不一样的，但是他们共同点是都应该有这个方法，所以我们把它修改为抽象方法，一旦你将这个方法定义为抽象方法就以为你不能写方法的实现，你只能定义下这个方法
 }
 class Circle extends Gemo {
-   getArea () {
-      return 123
-   }
+  getArea() {
+    return 123;
+  }
 }
 class Square extends Gemo {
-   getArea () {
-      return 456
-   }
+  getArea() {
+    return 456;
+  }
 }
 class Triangle extends Gemo {
-   getArea () {
-      return 789
-   }
+  getArea() {
+    return 789;
+  }
 }
-const demo = Demo.getInstance()
+const demo = Demo.getInstance();
 ```
-## TypeScript中的配置文件
+
+## TypeScript 中的配置文件
+
 &emsp;首先我们都知道在初始化`TypeScript`项目的时候我们需要使用命令：
+
 ```sh
 ts --init
 ```
+
 &emsp;使用命令初始化项目后，我们的文件夹中会多出一个`tsconfig.json`文件，这个就是`TypeScript`项目的配置文件。我们知道给他人提供代码的时候需要我们将`ts`文件转成`js`文件，这个编译过程需要使用命令：
+
 ```sh
 tsc demo.ts
 ```
+
 如果我们`tsc`后面指定了具体文件其实是不会走我们项目中的`tsconfig.json`文件的，反之，直接使用`tsc`，后面不跟任何内容是会走配置文件的，它会默认将根目录下的所有内容进行编译生成对应的`js`文件。那，如果我们想指定编译文件，而不想全部编译，我们可以在`tsconfig.json`文件内做一些修改：
+
 ```json
 {
-   "file": ["demo.ts"]
+  "file": ["demo.ts"]
 }
 ```
+
 或者你也可以使用`exclude`和`include`来实现同样的功能：
+
 ```json
 {
-   "include": [
-      "./demo.ts"
-   ],
-   "exclude": [
-      "./demo1.ts",
-   ]
+  "include": ["./demo.ts"],
+  "exclude": ["./demo1.ts"]
 }
 ```
+
 当然也可以接收正则表达式来匹配文件，接着我们来看下配置文件中的`compilerOptions`配置项，我们列举几个常用的配置项来讲解：
 ::: warning 注意
 `ts-node`底层其实会走配置文件的。
 :::
+
 ```json
 /* 编译配置项 */
 "compilerOptions": {
@@ -632,333 +776,387 @@ tsc demo.ts
    "noUnusedParameters": true,            /* 与上雷同，此配置针对方法的参数 */
 }
 ```
+
 ## 联合类型和类型保护
+
 首先我们来说下什么是联合类型，我们声明两个接口：
+
 ```ts
 interface Bird {
-   fly: boolean;
-   sing: () => {};
+  fly: boolean;
+  sing: () => {};
 }
 interface Dog {
-   fly: boolean;
-   bark: () => {};
+  fly: boolean;
+  bark: () => {};
 }
-function trainAnimal (animal: Bird | Dog) {
-   animal.sing()
+function trainAnimal(animal: Bird | Dog) {
+  animal.sing();
 }
 ```
+
 这个时候我们在调用`animal`参数时，`ts`只会给我们提示`fly`属性，而不会提示其他的方法，这就是联合类型，只会提示共有的属性和方法，当我们调用`animal`参数的`sing`方法的时候，`ts`会发出警告，因为如果我们`Dog`类型的话其实是没有`sing`方法的，我们如何来规避这种警告呢，我们需要使用类型保护，类型保护的方式有很多种，我们来简单介绍几个：
+
 ### 断言
+
 ```ts
 interface Bird {
-   fly: boolean;
-   sing: () => {};
+  fly: boolean;
+  sing: () => {};
 }
 interface Dog {
-   fly: boolean;
-   bark: () => {};
+  fly: boolean;
+  bark: () => {};
 }
-function trainAnimal (animal: Bird | Dog) {
-   if (animal.fly) {
-      (animal as Bird).sing()
-   } else {
-      (animal as Dog).bark()
-   }
+function trainAnimal(animal: Bird | Dog) {
+  if (animal.fly) {
+    (animal as Bird).sing();
+  } else {
+    (animal as Dog).bark();
+  }
 }
 ```
+
 ### in
+
 ```ts
-function trainAnimal (animal: Bird | Dog) {
-   if ('sing' in animal) {
-      animal.sing()
-   } else {
-      animal.bark()
-   }
+function trainAnimal(animal: Bird | Dog) {
+  if ("sing" in animal) {
+    animal.sing();
+  } else {
+    animal.bark();
+  }
 }
 ```
+
 ### typeof
+
 ```ts
-function add (first: string | Number, second: string | Number) {
-   if (typeof first === 'string' || typeof second === 'string') {
-      return `${first}${second}`
-   }
-   return first + second
+function add(first: string | Number, second: string | Number) {
+  if (typeof first === "string" || typeof second === "string") {
+    return `${first}${second}`;
+  }
+  return first + second;
 }
 ```
+
 ### instanceof
+
 ```ts
 class Number {
-   count: number;
+  count: number;
 }
-function add (first: object | Number, second: object | Number) {
-   if (first instanceof Number && second instanceof Number) {
-      return first.count + second.count
-   }
-   return 0
+function add(first: object | Number, second: object | Number) {
+  if (first instanceof Number && second instanceof Number) {
+    return first.count + second.count;
+  }
+  return 0;
 }
 ```
+
 ::: warning 注意
 此处要使用`class`类的形式，因为`interface`不具备`instanceof`方法
 :::
+
 ## Enum 枚举类型
+
 我们在开发实际过程当中都会有这种情况：
+
 ```js
 const Status = {
-   OFFLINE: 0,
-   ONLINE: 1,
-   DELETED: 2,
+  OFFLINE: 0,
+  ONLINE: 1,
+  DELETED: 2
+};
+function getResult(status) {
+  if (status === Status.OFFLINE) {
+    return "offline";
+  } else if (status === Status.ONLINE) {
+    return "online";
+  } else if (status === Status.DELETED) {
+    return "deleted";
+  }
+  return "error";
 }
-function getResult (status) {
-   if (status === Status.OFFLINE) {
-      return 'offline'
-   } else if (status === Status.ONLINE) {
-      return 'online'
-   } else if (status === Status.DELETED) {
-      return 'deleted'
-   }
-   return 'error'
-}
-const result = getResult(Status.OFFLINE)
+const result = getResult(Status.OFFLINE);
 ```
+
 我们可以使用`ts`来更优雅的实现：
+
 ```ts
 enum Status {
-   OFFLINE,
-   ONLINE,
-   DELETED,
+  OFFLINE,
+  ONLINE,
+  DELETED
 }
-function getResult (status) {
-   if (status === Status.OFFLINE) {
-      return 'offline'
-   } else if (status === Status.ONLINE) {
-      return 'online'
-   } else if (status === Status.DELETED) {
-      return 'deleted'
-   }
-   return 'error'
+function getResult(status) {
+  if (status === Status.OFFLINE) {
+    return "offline";
+  } else if (status === Status.ONLINE) {
+    return "online";
+  } else if (status === Status.DELETED) {
+    return "deleted";
+  }
+  return "error";
 }
-const result = getResult(Status.OFFLINE)
+const result = getResult(Status.OFFLINE);
 ```
+
 这样也可以实现上面用`js`实现的效果，这是因为，`ts`中的`enum`枚举类型，默认会给第一项定义为`0`，依次递增，如果我们想更改默认值，我们可以这样来修改：
+
 ```ts
 enum Status {
-   OFFLINE = 1,
-   ONLINE,
-   DELETED,
+  OFFLINE = 1,
+  ONLINE,
+  DELETED
 }
 ```
+
 这样的话，分别代表的就是`1`、`2`、`3`，如果我们将`ONLINE`的值修改为`4`，那么`DELETED`的值将为`5`。我们不仅可以正向查询还可以反向查询：
+
 ```ts
-Status.OFFLINE === Status[0]
+Status.OFFLINE === Status[0];
 ```
+
 ## 函数泛型
+
 &emsp;泛型，泛指的类型（`generic`），泛型的使用场景：我们不确定方法定义的时候参数的类型，当我们使用函数的时候我们参数的类型，这个时候我们可以在函数参数中使用泛型，我们在函数当中使用泛型的时候，需要在函数名的后面使用尖括号的形式定义下泛型，通常我们使用`T`也就是`type`的缩写，不仅可以定义一个泛型还可以定义多个泛型，使用逗号隔开即可，我们先来看一个在函数中使用泛型的一个例子：
+
 ```ts
-function join<T, P> (first: T, second: P) {
-   return `${first}${second}`
+function join<T, P>(first: T, second: P) {
+  return `${first}${second}`;
 }
-const result = join<string, string> (1, '1')
+const result = join<string, string>(1, "1");
 ```
+
 泛型不仅可以在函数的参数中使用，还可以作为函数的返回结果使用：
+
 ```ts
-function join<T, P> (first: T, second: P): T {}
+function join<T, P>(first: T, second: P): T {}
 ```
+
 数组中使用泛型，以下两种情况是等价的：
+
 ```ts
-function join<T> (first: T[]) {
-   return first
+function join<T>(first: T[]) {
+  return first;
 }
 // or
-function join<T> (first: Arrary<T>) {
-   return first
+function join<T>(first: Arrary<T>) {
+  return first;
 }
-const result = join<string> (['123'])
+const result = join<string>(["123"]);
 ```
+
 ::: warning 注意
 如果在调用函数的时候没有写前面的具体类型，它也不会报错，这是因为`ts`底层会做类型推断
 :::
+
 ## 类中的泛型以及泛型类型
+
 &emsp;&emsp;假设我们有一个类，类中接收一个`data`的数组作为参数，数组的每一项我们暂且定为`string`类型，我们这是可以写成`constructor (private data: string[]) {}`，那以后需求变更，数组内容不仅可以是`string`类型还可以是`number`类型，这时我们就需要修改为`constructor (private data: string[] | number[]) {}`，那以后我们可能支持更多类型的值，这时我们就需要写更长的联合类型，从而使我们的代码看起来非常的繁琐，为了解决这个问题我们可以使用类中的泛型，其实它不仅仅解决这种问题，在`TypeScript`中编写复杂代码很多时候我们需要使用泛型来解决灵活性上的问题。<br />
 &emsp;&emsp;接着我们来看下类中泛型的定义：
+
 ```ts
 class DataManager<T> {
-   constructor (private data: T[]) {}
-   getName (index: number): T {
-      return this.data[index]
-   }
+  constructor(private data: T[]) {}
+  getName(index: number): T {
+    return this.data[index];
+  }
 }
-const data = new DataManager<string, number>(['1'])
+const data = new DataManager<string, number>(["1"]);
 ```
+
 &emsp;&emsp;类中定义泛型，需要在类名后加一对尖括号，内容为`T`，我们来解释下这段代码的意思：这个类中的构造函数接收一个`data`的参数，每一项内容我们定义为泛型`T`，接下来有一个`getName`的方法来获取指定数组中的每一项，参数`index`自然是一个`number`类型，返回结果我们暂时不确定，但是肯定是泛型`T`，所以我们就将`getName`的返回结果定义为`T`，这样就解决了我们上面复杂的联合类型的问题。<br />
 &emsp;&emsp;接下来我们再更改下需求，我现在想让`data`这个数组中的每一项都有一个`name`属性，那我们应该来怎么约束泛型呢，我们可以定义一个`interface`接口，接下来我们通过代码来实现下：
+
 ```ts
 interface Item {
-   name: string;
+  name: string;
 }
 class DataManager<T extends Item> {
-   constructor (private data: T[]) {}
-   getName (index: number): string {
-      return this.data[index].name
-   }
+  constructor(private data: T[]) {}
+  getName(index: number): string {
+    return this.data[index].name;
+  }
 }
-const data = new DataManager([{
-   name: 'haochyk',
-}])
+const data = new DataManager([
+  {
+    name: "haochyk"
+  }
+]);
 ```
+
 &emsp;&emsp;同样我们可以借助`extends`让泛型在具体类型的对应上面来做一些约束，比如我只想让泛型类型为`number`或者`string`，我们可以使用`extends`这样来写：
+
 ```ts
 class DataManager<T extends number | string> {
-   constructor (private data: T[]) {}
-   getName (index: number): string {
-      return this.data[index];
-   }
+  constructor(private data: T[]) {}
+  getName(index: number): string {
+    return this.data[index];
+  }
 }
-const data = new DataManager<string>(['1'])
+const data = new DataManager<string>(["1"]);
 ```
+
 &emsp;&emsp;泛型还可以作为`type`的声明，比如用泛型还可以声明些类型，那如何使用泛型作为一个具体的类型注解，看以下示例：
+
 ```ts
 const hello = function <T>(param) => {
    return param
 }
 const func: <T>(param: T) => T = hello
 ```
+
 ## 命名空间（nameSpace）
+
 &emsp;&emsp;`namespace`的一个好处就是给我们一个类似模块化开发的方式让我们能尽少得去声明全局变量，或者说把一组相关的内容封装到一起去对外提供统一的暴露接口：
 之前我们都是在`node`环境下运行代码，现在我们换成在浏览器下运行我们的代码，首先我们执行命令：`npm init -y`来初始化一个项目，接着我们再执行`tes -init`命令来初始化下`typescript`，现在我们再根目录下新建一个`src`目录，并新建一个叫做`page`的`js`文件，再在根目录下新建一个`index`的`html`文件，文件内容我们尽量从简，只是做一个简单的演示，接着我们来修改下`ts`的配置文件：将`rootDir`注释打开，内容修改为`./src`,并且将`outDir`注释也打开，内容修改为`./dist`，到这我们项目的基本框架就搭建起来了，然后我们在我们的`page.ts`文件中写一些东西，这里使用面向对象的写法来写：
+
 ```ts
 class Header {
-   constructor () {
-      const eleE = document.createElement('div')
-      eleE.innerText = 'This is header'
-      document.body.appendChild(eleE)
-   }
+  constructor() {
+    const eleE = document.createElement("div");
+    eleE.innerText = "This is header";
+    document.body.appendChild(eleE);
+  }
 }
 
 class Content {
-   constructor () {
-      const eleE = document.createElement('div')
-      eleE.innerText = 'This is content'
-      document.body.appendChild(eleE)
-   }
+  constructor() {
+    const eleE = document.createElement("div");
+    eleE.innerText = "This is content";
+    document.body.appendChild(eleE);
+  }
 }
 
 class Footer {
-   constructor () {
-      const eleE = document.createElement('div')
-      eleE.innerText = 'This is footer'
-      document.body.appendChild(eleE)
-   }
+  constructor() {
+    const eleE = document.createElement("div");
+    eleE.innerText = "This is footer";
+    document.body.appendChild(eleE);
+  }
 }
 
 class Page {
-   constructor () {
-      new Header()
-      new Content()
-      new Footer()
-   }
+  constructor() {
+    new Header();
+    new Content();
+    new Footer();
+  }
 }
 ```
-&emsp;&emsp;之后我们再我们的`index.html`中引入`./dist/page.js`文件，并且实例化下`page`类，从新打包编译下，这时候我们打开i`ndex.html`页面就可以看到页面上已经有内容了，这里顺带提下，我们每次修改代码都需要重新执行`tsc`命令来打包编译`ts`文件，这里我们可以使用命令`tsc -w`来进行一个监听。回到浏览器的页面上的控制台我们来看，这个时候你会发现`Header`、`Content`、`Footer`、`Page`这些都是全局体变量，其实我们再项目开发的时候要尽量的去避免声明全局变量，这个时候我们可以使用`namespcae`来解决这个问题，回到我们的`page.ts`文件中我们来做下修改：
+
+&emsp;&emsp;之后我们再我们的`index.html`中引入`./dist/page.js`文件，并且实例化下`page`类，从新打包编译下，这时候我们打开 i`ndex.html`页面就可以看到页面上已经有内容了，这里顺带提下，我们每次修改代码都需要重新执行`tsc`命令来打包编译`ts`文件，这里我们可以使用命令`tsc -w`来进行一个监听。回到浏览器的页面上的控制台我们来看，这个时候你会发现`Header`、`Content`、`Footer`、`Page`这些都是全局体变量，其实我们再项目开发的时候要尽量的去避免声明全局变量，这个时候我们可以使用`namespcae`来解决这个问题，回到我们的`page.ts`文件中我们来做下修改：
+
 ```ts
 namespace Home {
-   class Header {
-      constructor () {
-         const eleE = document.createElement('div')
-         eleE.innerText = 'This is header'
-         document.body.appendChild(eleE)
-      }
-   }
+  class Header {
+    constructor() {
+      const eleE = document.createElement("div");
+      eleE.innerText = "This is header";
+      document.body.appendChild(eleE);
+    }
+  }
 
-   class Content {
-      constructor () {
-         const eleE = document.createElement('div')
-         eleE.innerText = 'This is content'
-         document.body.appendChild(eleE)
-      }
-   }
+  class Content {
+    constructor() {
+      const eleE = document.createElement("div");
+      eleE.innerText = "This is content";
+      document.body.appendChild(eleE);
+    }
+  }
 
-   class Footer {
-      constructor () {
-         const eleE = document.createElement('div')
-         eleE.innerText = 'This is footer'
-         document.body.appendChild(eleE)
-      }
-   }
+  class Footer {
+    constructor() {
+      const eleE = document.createElement("div");
+      eleE.innerText = "This is footer";
+      document.body.appendChild(eleE);
+    }
+  }
 
-   export class Page {
-      constructor () {
-         new Header()
-         new Content()
-         new Footer()
-      }
-   }
+  export class Page {
+    constructor() {
+      new Header();
+      new Content();
+      new Footer();
+    }
+  }
 }
 ```
+
 到这就解决了全局变量的问题，全局变量只剩下了一个`Page`，这是符合我们预期的，这时我们还应该修改下我们的`index.html`文件，因为之前的调用方式是直接实例化`Page`类，现在有了命名空间，我们需要修改成`new Home.Page()`。
 ::: warning 注意
 在`page.ts`文件中我们需要将使用的`page`类使用`export`导出
 :::
 ::: tip 说明
-完整demo地址：<a href="https://github.com/SuperLuckyYU/Ts-namespace-demo" target="_black">https://github.com/SuperLuckyYU/Ts-namespace-demo</a>
+完整 demo 地址：<a href="https://github.com/SuperLuckyYU/Ts-namespace-demo" target="_black">https://github.com/SuperLuckyYU/Ts-namespace-demo</a>
 :::
 &emsp;&emsp;我们接着上面写的`demo`来说，现在我们再写一个命名空间，名字叫做`Components`，我们将之前之前写在`page.ts`中的具体方法实现抽离到`Components`命名空间中去，然后在`page.ts`中去使用，这时，我们新建一个`components.ts`文件：
+
 ```ts
 // components.ts
 namespace Components {
-   export class Header {
-      constructor () {
-         const eleE = document.createElement('div')
-         eleE.innerText = 'This is header'
-         document.body.appendChild(eleE)
-      }
-   }
+  export class Header {
+    constructor() {
+      const eleE = document.createElement("div");
+      eleE.innerText = "This is header";
+      document.body.appendChild(eleE);
+    }
+  }
 
-   export class Content {
-      constructor () {
-         const eleE = document.createElement('div')
-         eleE.innerText = 'This is content'
-         document.body.appendChild(eleE)
-      }
-   }
+  export class Content {
+    constructor() {
+      const eleE = document.createElement("div");
+      eleE.innerText = "This is content";
+      document.body.appendChild(eleE);
+    }
+  }
 
-   export class Footer {
-      constructor () {
-         const eleE = document.createElement('div')
-         eleE.innerText = 'This is footer'
-         document.body.appendChild(eleE)
-      }
-   }
+  export class Footer {
+    constructor() {
+      const eleE = document.createElement("div");
+      eleE.innerText = "This is footer";
+      document.body.appendChild(eleE);
+    }
+  }
 }
 // page.ts
 namespace Home {
-   export class Page {
-      constructor () {
-         new Components.Header()
-         new Components.Content()
-         new Components.Footer()
-      }
-   }
+  export class Page {
+    constructor() {
+      new Components.Header();
+      new Components.Content();
+      new Components.Footer();
+    }
+  }
 }
 ```
-&emsp;&emsp;到现在为止代码是无法运行的，因为打包会生成两份js文件，分别为：`page.js`、`components.js`文件，需要我们再`index.html`文件中引入我们的`components.js`文件，我们也可以将所有的打包文件统一合并到一个`js`文件中去，我们修改下`ts`的配置文件：
+
+&emsp;&emsp;到现在为止代码是无法运行的，因为打包会生成两份 js 文件，分别为：`page.js`、`components.js`文件，需要我们再`index.html`文件中引入我们的`components.js`文件，我们也可以将所有的打包文件统一合并到一个`js`文件中去，我们修改下`ts`的配置文件：
+
 ```json
 "module": "amd",
 "outFile": "./dist/page.js",
 ```
+
 &emsp;&emsp;这时我们在`index.html`中只需要引入一个`js`文件即可。回过头来看我们的`page.ts`我们会发现命名空间之间的引入非常的不直观，我们可以声明下命名空间之间的依赖声明：
+
 ```ts
 ///<reference path='./components.ts' />
 namespace Home {
-   export class Page {
-      constructor () {
-         new Components.Header()
-         new Components.Content()
-         new Components.Footer()
-      }
-   }
+  export class Page {
+    constructor() {
+      new Components.Header();
+      new Components.Content();
+      new Components.Footer();
+    }
+  }
 }
 ```
+
 命名空间中还可以暴露`interface`语法：
+
 ```ts
 // components.ts
 namespace Components {
@@ -981,7 +1179,9 @@ namespace Home {
    }
 }
 ```
+
 在命名空间中还可以使用子的命名空间：
+
 ```ts
 // components.ts
 namespace Components {
@@ -990,183 +1190,213 @@ namespace Components {
    }
 }
 ```
-## Import对应的模块化-缺代码
+
+## Import 对应的模块化-缺代码
+
 我们可以通过`es6`的`import`和`export`语法在`TypeScript`中做模块化的组织：
+
 ```ts
 // page.ts
-import { Header, Content, Footer } from './components.ts'
+import { Header, Content, Footer } from "./components.ts";
 export default class Page {
-   constructor () {
-      new Header()
-      new Content()
-      new Footer()
-   }
+  constructor() {
+    new Header();
+    new Content();
+    new Footer();
+  }
 }
 // components.js
 export class Header {
-   constructor () {
-      const eleE = document.createElement('div')
-      eleE.innerText = 'This is header'
-      document.body.appendChild(eleE)
-   }
+  constructor() {
+    const eleE = document.createElement("div");
+    eleE.innerText = "This is header";
+    document.body.appendChild(eleE);
+  }
 }
 
 export class Content {
-   constructor () {
-      const eleE = document.createElement('div')
-      eleE.innerText = 'This is content'
-      document.body.appendChild(eleE)
-   }
+  constructor() {
+    const eleE = document.createElement("div");
+    eleE.innerText = "This is content";
+    document.body.appendChild(eleE);
+  }
 }
 
 export class Footer {
-   constructor () {
-      const eleE = document.createElement('div')
-      eleE.innerText = 'This is footer'
-      document.body.appendChild(eleE)
-   }
+  constructor() {
+    const eleE = document.createElement("div");
+    eleE.innerText = "This is footer";
+    document.body.appendChild(eleE);
+  }
 }
 ```
+
 &emsp;&emsp;这时我们来看下打包后的`page.js`文件内容你会发现被打包成了`AMD`规范的模块化代码了，这个时候我们是没办法直接在浏览器上跑起来的，因为`AMD`这种规范的代码浏览器是没办法识别的，浏览器需要有解析的工具才能帮助我们识别`define`这种语法，之所以会变成`AMD`语法的代码是因为我们在`ts`的配置文件中将`module`修改为了`amd`，如果想让浏览器支持，需要我们在入口文件也就是`index.html`中引入`require.js`做兼容，然后对`index.html`做下修改：
+
 ```js
-require(['page'], function (page) {
-   new page.default()
-})
+require(["page"], function(page) {
+  new page.default();
+});
 ```
+
 &emsp;&emsp;现在我们可以看到现在的代码编译过后需要引入各种像`require`这种库相对来说比较麻烦，实际上在用`TypeScript`做前端代码编写的时候一般我们会在项目中引入`webpack`来帮助我们对代码做进一步的编译，这时我们就不需要引入`require`这些步骤了，`webpack`它可以做的更完善。
-## 使用Parcel打包TS代码
+
+## 使用 Parcel 打包 TS 代码
+
 &emsp;&emsp;`Parcel`是和`Webpack`相类似的一个打包工具，但是它不需要做过多额外的配置，之前我们使用`import`的时候需要引入`require`这种方式是比较麻烦的，使用`parcel`则会变得非常简单，在我们的入口文件`index.html`中直接引入`ts`文件，然后安装`parcel`，执行命令：`npm install parcel@next -D`，接着我们再`package.json`中写一个`script`命令：`test: parcel ./src/index.html`，它会帮助你自动起一个服务器，打开服务器地址你就会发现，代码正常运行了，这是因为它将我们的`ts`文件进行了编译，编译成了浏览器可以执行的`js`文件
+
 ## 描述文件中的全局类型
-&emsp;&emsp;首先我们来说为什么要安装或者手写这种描述文件（类型定义文件），它是帮助我们的`ts`文件理解我们引入的js文件或者js库里面的内容的，因为这种`js`库里面没有`ts`里面要求的类型的概念，所以在`ts`文件里去引入`js`库的时候，`ts`不能理解库里的语法，所以我们需要`.d.ts`的类型定义文件帮助`ts`去理解。当然我们也可以书写这种类型定义文件。接下来就是我们的主题内容，如何在描述文件（`.d.ts`文件）中定义全局类型：<br />
+
+&emsp;&emsp;首先我们来说为什么要安装或者手写这种描述文件（类型定义文件），它是帮助我们的`ts`文件理解我们引入的 js 文件或者 js 库里面的内容的，因为这种`js`库里面没有`ts`里面要求的类型的概念，所以在`ts`文件里去引入`js`库的时候，`ts`不能理解库里的语法，所以我们需要`.d.ts`的类型定义文件帮助`ts`去理解。当然我们也可以书写这种类型定义文件。接下来就是我们的主题内容，如何在描述文件（`.d.ts`文件）中定义全局类型：<br />
 这里我们以引入`JQuery`库为例来写的描述文件：
+
 ```ts
 // 全局变量 注意全局类型都要使用declare
-declare var $: (param: () => void) => void
+declare var $: (param: () => void) => void;
 // 全局函数  函数重载
 interface JQueryInstance {
-   html: (html: string) => JQueryInstance;
+  html: (html: string) => JQueryInstance;
 }
-declare function $(readyFunc: () => void): void
-declare function $(selector: string): JQueryInstance
+declare function $(readyFunc: () => void): void;
+declare function $(selector: string): JQueryInstance;
 // 如何对对象进行类型定义，以及对类进行类型定义，以及命名空间的嵌套
 namespace $ {
-   namespace fn {
-      class init {}
-   }
+  namespace fn {
+    class init {}
+  }
 }
 // 使用interface的方式实现了函数重载，如何$既是函数又是对象的话，这种方式就不太好写了，只能使用上面那种方式
 interface JQueryInstance {
-   (readyFunc: () => void): void;
-   (selector: string): JQueryInstance;
+  (readyFunc: () => void): void;
+  (selector: string): JQueryInstance;
 }
 declare var $: JQueryInstance;
 ```
+
 :::warning 注意
 定义函数的时候有一个函数重载的机制，同一个函数的名字可以去定义多个这样的全局函数，它会根据你参数的不同理解不同。
 :::
+
 ## 模块代码的类型描述文件
-&emsp;&emsp;我们以es6为例来介绍下载.d.ts文件中声明些模块化：
+
+&emsp;&emsp;我们以 es6 为例来介绍下载.d.ts 文件中声明些模块化：
+
 ```ts
-declare module 'JQuery' {
-   interface JQueryInstance {
-      html: (html: string) => JQueryInstance;
-   }
-   function $(readyFunc: () => void): void
-   function $(selector: string): JQueryInstance
-   namespace $ {
-      namespace fn {
-         class init {}
-      }
-   }
-   export = $
+declare module "JQuery" {
+  interface JQueryInstance {
+    html: (html: string) => JQueryInstance;
+  }
+  function $(readyFunc: () => void): void;
+  function $(selector: string): JQueryInstance;
+  namespace $ {
+    namespace fn {
+      class init {}
+    }
+  }
+  export = $;
 }
 ```
+
 :::warning 注意
 一、定义模块的时候，模块后面的名称要与`ts`文件中引入的名称保持一致。<br />
 二、而且里面我们就不再需要写`declare`关键字了。<br />
 三、一定要将外部要使用的东西使用`export`导出出去。
 :::
-## 泛型中使用keyof语法的使用
+
+## 泛型中使用 keyof 语法的使用
+
 &emsp;&emsp;当我们去定义一个类型的时候，除了可以让它是一个基本类型如：`string`、`number`，也可以是`interface`或者是对象的这种复杂类型，实际上现在我们甚至可以让它是一个固定的字符串，正因为类型可以是一个固定字符串的原理帮助，我们才可以使用`keyof`的语法，`keyof`顾名思义是去循环遍历接口内容，然后让泛型成为接口中某一项的具体字符串。在未来如果你有一个类里有一个对象，然后你想根据`index`或者`key`值去获取对象中某一项内容又想去推断出内容的类型的时候你可以使用`T extends keyof Person`这种复杂语法解决这个问题。<br />
 我们来看一个应用场景的例子：
+
 ```ts
 interface Person {
-   name: string;
-   age: number;
-   gerder: string;
+  name: string;
+  age: number;
+  gerder: string;
 }
 class Teacher {
-   construct (private info: Person) {}
-   getInfo<T extends keyof Person> (key: T): Person[T] {
-      return this.info[key]
-   }
+  construct(private info: Person) {}
+  getInfo<T extends keyof Person>(key: T): Person[T] {
+    return this.info[key];
+  }
 }
 const teacher = new Teacher({
-   name: 'haochyk',
-   age: 18,
-   gerder: 'male',
-})
-const info = teacher.getInfo('name')
-console.log(info)
+  name: "haochyk",
+  age: 18,
+  gerder: "male"
+});
+const info = teacher.getInfo("name");
+console.log(info);
 ```
+
 ## 类的装饰器
+
 &emsp;&emsp;实际上就是对类的修饰工具，装饰器本身是一个函数，装饰器通过`@`符号来使用，装饰器的运行时刻是在类被创建的时候就会被调用，而不是类被实例化的时候再执行，装饰器接收的参数是构造函数，一个类可以使用多个装饰器，注意一个类绑定多个装饰器的时候，执行顺序是从下到上，也就是后绑定的装饰器先执行。当你使用`Decorator`装饰器修饰类的时候，`TS`可能会报错提示说：`Decorator`这种新的装饰器语法实际上在`TS`里面它是一个实验性质的语法，所以我们要想使用它，我们需要打开`tsconfig.json`中的对实验类型的支持注释打开：
+
 ```json
 /* Experimental Options */
 "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
 "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
 ```
-&emsp;&emsp;我们先来看一个最简单的类的装饰器demo：
+
+&emsp;&emsp;我们先来看一个最简单的类的装饰器 demo：
+
 ```ts
 function testDecorator(constructor: any) {
-   constructor.prototype.getName = () => {
-      console.log('decorator')
-   }
+  constructor.prototype.getName = () => {
+    console.log("decorator");
+  };
 }
 
 @testDecorator
 class Test {}
-const test = new Test()
-console.log((test as any).getName())
+const test = new Test();
+console.log((test as any).getName());
 ```
+
 &emsp;&emsp;在某种情况下，我需要装饰器来装饰，但是有的时候我这个类不需要装饰器来装饰，也就是说有一些判断在里面，这个时候可以使用工厂模式
+
 ```ts
 function testDecorator(flag: boolean) {
-   if (flag) {
-      return function (constructor: any) {
-         constructor.prototype.getName = () => {
-            console.log('decorator')
-         }
-      }
-   } else {
-      return function (constructor: any) {}
-   }
+  if (flag) {
+    return function(constructor: any) {
+      constructor.prototype.getName = () => {
+        console.log("decorator");
+      };
+    };
+  } else {
+    return function(constructor: any) {};
+  }
 }
 
 @testDecorator(true)
 class Test {}
-const test = new Test()
-console.log((test as any).getName())
+const test = new Test();
+console.log((test as any).getName());
 ```
+
 &emsp;&emsp;上述例子是一个容易理解，但是不太正规的一种写法，接下我们来写一些比较正规而且稍微复杂一点的实例：
+
 ```ts
 function testDecorator<T extends new (...args: any[]) => any>(constructor: T) {
-   return class extends constructor {
-      name = 'haochyk'
-      getName () {
-         return this.name
-      }
-   }
+  return class extends constructor {
+    name = "haochyk";
+    getName() {
+      return this.name;
+    }
+  };
 }
 
 @testDecorator
 class Test {
-   constructor (private name: string) {}
+  constructor(private name: string) {}
 }
-const test = new Test('TT')
-console.log((test as any).getName()) // => 'haochyk'
+const test = new Test("TT");
+console.log((test as any).getName()); // => 'haochyk'
 ```
+
 当我们在写代码的时候会发现，必须`test as any`才可以，否则会报错，这是因为`getName`方法是装饰器偷偷给扩展的，`TS`并不知道，所以会认为类中没有这个方法。要解决这个问题可以使用工厂模式，来看这个实例代码：
+
 ```ts
 function testDecorator () {
    function<T extends new (...args: any[]) => any> (constructor: T) {
@@ -1185,69 +1415,84 @@ const Test = testDecorator()(class Test {
 const test = new Test('TT')
 console.log(test.getName()) // => 'haochyk'
 ```
+
 ## 方法装饰器
-&emsp;&emsp;装饰器不仅可以用在类上，还可以用在类中的属性、方法、访问器上，我们先来看下类中的方法装饰器，类中的方法装饰器接收三个参数，分别为target、key、descriptor。
+
+&emsp;&emsp;装饰器不仅可以用在类上，还可以用在类中的属性、方法、访问器上，我们先来看下类中的方法装饰器，类中的方法装饰器接收三个参数，分别为 target、key、descriptor。
 我们来分别说下这三个参数分别代表的含义：<br />
-&emsp;&emsp;target：目标类的prototype<br />
+&emsp;&emsp;target：目标类的 prototype<br />
 &emsp;&emsp;key：目标方法的名称<br />
 &emsp;&emsp;descriptor：属性描述符<br />
-与静态方法不同的是，静态方法的装饰器target参数代表的是目标类的构造函数。
-方式装饰器Demo：
-``` ts
-function getNameDecorator (target: any, key: string, descriptor: PropertyDescriptor) {
-   descriptor.writable = false
+与静态方法不同的是，静态方法的装饰器 target 参数代表的是目标类的构造函数。
+方式装饰器 Demo：
+
+```ts
+function getNameDecorator(
+  target: any,
+  key: string,
+  descriptor: PropertyDescriptor
+) {
+  descriptor.writable = false;
 }
 
 class Test {
-   constructor (private name: string) {}
-   @getNameDecorator
-   getName () {
-      return this.name
-   }
+  constructor(private name: string) {}
+  @getNameDecorator
+  getName() {
+    return this.name;
+  }
 }
-const test = new Test('haochyk')
-console.log(test.getName())
+const test = new Test("haochyk");
+console.log(test.getName());
 ```
+
 ::: danger 注意
-访问器的装饰器跟方法的装饰器基本一样，但是注意，同一个装饰器不能同时装饰一个类的get、set。
+访问器的装饰器跟方法的装饰器基本一样，但是注意，同一个装饰器不能同时装饰一个类的 get、set。
 :::
+
 ## 属性装饰装饰器
+
 &emsp;&emsp;属性装饰器与方法和访问器的装饰器接收参数的个数有所不同，它只能接受两个参数：<br />
-&emsp;&emsp;target：目标类的prototype<br />
+&emsp;&emsp;target：目标类的 prototype<br />
 &emsp;&emsp;key：目标属性的名称<br />
 有两个点需要提及下，分别是：<br />
-如果要修改属性的descriptor，我们可以在装饰器中返回一个descriptor：
-``` ts
-function nameDecorator (target: any, key: string): any {
-   const descriptor: PropertyDescriptor = {
-      writable: false
-   }
-   return descriptor
+如果要修改属性的 descriptor，我们可以在装饰器中返回一个 descriptor：
+
+```ts
+function nameDecorator(target: any, key: string): any {
+  const descriptor: PropertyDescriptor = {
+    writable: false
+  };
+  return descriptor;
 }
 
 class Test {
-   @nameDecorator
-   name = 'Haochyk'
+  @nameDecorator
+  name = "Haochyk";
 }
-const test = new Test()
-test.name = 'hao'
+const test = new Test();
+test.name = "hao";
 ```
+
 但是如果你要修改属性的值，是修改不了的，因为你在装饰器中对值得修改是在类的原型对象上属性的修改，而你在类中定义的属性是绑定在了类的实例上，在取值的时候优先找的是实例上的变量，如果没有才会找原型对象上的变量
-``` ts
-function nameDecorator (target: any, key: string) {
-   target[key] = 'hao'
+
+```ts
+function nameDecorator(target: any, key: string) {
+  target[key] = "hao";
 }
 
 class Test {
-   @nameDecorator
-   name = 'Haochyk'
+  @nameDecorator
+  name = "Haochyk";
 }
-const test = new Test()
-console.log(test.name) // => 'Haochyk'
+const test = new Test();
+console.log(test.name); // => 'Haochyk'
 ```
+
 ## 参数装饰器
+
 &emsp;&emsp;参数装饰器接受三个参数：<br />
-&emsp;&emsp;target：目标类的prototype<br />
+&emsp;&emsp;target：目标类的 prototype<br />
 &emsp;&emsp;key：所在方法的名称<br />
 &emsp;&emsp;paramsIndex：装饰的参数所在的下标<br />
 :::warning 注意
@@ -1255,8 +1500,10 @@ console.log(test.name) // => 'Haochyk'
 二、而且里面我们就不再需要写`declare`关键字了。<br />
 三、一定要将外部要使用的东西使用`export`导出出去。
 :::
+
 ## 装饰器实际使用的小案例
-``` ts
+
+```ts
 const userInfo: any = undefined
 
 function catchError (msg: string) {
@@ -1284,19 +1531,10 @@ const test = new Test()
 console.log(test.getUserName())
 console.log(test.getUserAge())
 ```
+
 :::tip 说明
-reflect-metadata库，可以帮助我们在类上面或者类的属性上面去存储一些数据，并且方便得进行数据的反射获取，具体使用请查看[官方介绍](https://github.com/rbuckton/reflect-metadata)
+reflect-metadata 库，可以帮助我们在类上面或者类的属性上面去存储一些数据，并且方便得进行数据的反射获取，具体使用请查看[官方介绍](https://github.com/rbuckton/reflect-metadata)
 :::
 :::tip 装饰器的执行顺序
 方法装饰器 -> 类装饰器
 :::
-
-
-
-
-
-
-
-
-
-

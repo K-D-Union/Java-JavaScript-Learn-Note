@@ -1,0 +1,7 @@
+language: node_js
+cache:
+  - npm
+install:
+  - npm
+script:
+  - npm test
