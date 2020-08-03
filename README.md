@@ -1,5 +1,7 @@
+<div align="center">
+[![Build Status](https://www.travis-ci.org/K-D-Union/Java-JavaScript-Learn-Note.svg?branch=master)](https://www.travis-ci.org/K-D-Union/Java-JavaScript-Learn-Note)
 # 项目简介：
-<p>&nbsp;&nbsp;&nbsp;&nbsp;本项目中的记录了一些学习笔记共分为三大部分及一些补充,Java\前端\简单常用的算法\数据结构。希望可以帮到一些同学。
+<p>&nbsp;&nbsp;&nbsp;&nbsp;:rocket: 本项目中的记录了一些学习笔记共分为三大部分及一些补充,Java\前端\简单常用的算法\数据结构。希望可以帮到一些同学。:heart:
 </p>
 <p>
 Java部分：分别有
@@ -46,3 +48,4 @@ Java部分：分别有
 <p>├── Vue</p>
 <p>├── React</p>
 <p>└── TypeScript</p>
+</div>
