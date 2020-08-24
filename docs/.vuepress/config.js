@@ -26,15 +26,25 @@ module.exports = {
                 link: "/"
             },
             {
+<<<<<<< HEAD
+=======
+                text: "MQ",
+                link: "/MQ/"
+            },
+            {
+>>>>>>> 更新MQ模块
                 text: "Java基础",
                 link: "/JavaIndex/"
             },
             {
                 text: "Java框架",
                 items: [{
+<<<<<<< HEAD
                         text: "MQ",
                         link: "/MQ/"
                     }, {
+=======
+>>>>>>> 更新MQ模块
                         text: "Spring",
                         link: "/Spring/"
                     },
