@@ -26,16 +26,15 @@ module.exports = {
                 link: "/"
             },
             {
-                text: "MQ",
-                link: "/MQ/"
-            },
-            {
                 text: "Java基础",
                 link: "/JavaIndex/"
             },
             {
                 text: "Java框架",
                 items: [{
+                        text: "MQ",
+                        link: "/MQ/"
+                    }, {
                         text: "Spring",
                         link: "/Spring/"
                     },
