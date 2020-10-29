@@ -2,7 +2,7 @@
 home: true
 lang: zh-CN
 heroText: K-D-Union
-heroImage: /logo.jpg
+heroImage:  /imgs/logo2.png
 actionText: 开始 →
 actionLink: /JavaIndex/
 features:
